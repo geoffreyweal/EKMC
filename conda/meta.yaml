@@ -1,0 +1,32 @@
+{% set version = "0.11" %}
+
+package:
+  name: ekmc
+  version: {{ version }}
+
+source:
+  git_rev: {{ version }}
+  git_url: https://github.com/geoffreyweal/EKMC.git
+
+build:
+  number: 1
+  skip: true  # [win and py27 or win32]
+  script: {{ PYTHON }} -m pip install . --no-deps -vv
+
+requirements:
+  build:
+    - python
+    - setuptools
+    - pip
+  run:
+    - python
+    - numpy
+    - scipy
+    - ase
+
+about:
+  home: https://github.com/geoffreyweal/EKMC
+  license: AGPL-3.0
+  summary: "This program is designed to simulate the kinetics of an exciton moving about molecules in a crystal using the kinetic Monte Carlo algorithm.
+
+# Build using: conda build .

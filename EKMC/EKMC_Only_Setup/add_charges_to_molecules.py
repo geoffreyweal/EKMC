@@ -6,7 +6,7 @@ This script will assign charges to the atoms in each molecule.
 import os
 from numpy import array
 
-from EKMC.EKMC_Setup.add_charges_to_molecules_methods.invariance_method import assigned_ATCs_to_molecules_invariance_method
+from EKMC.EKMC_Only_Setup.add_charges_to_molecules_methods.invariance_method import assigned_ATCs_to_molecules_invariance_method
 
 def add_charges_to_molecules(molecules, molecule_graphs, ATC_folder_path, functional_and_basis_set, max_disparity=None):
 	"""

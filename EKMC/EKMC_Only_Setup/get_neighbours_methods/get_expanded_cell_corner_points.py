@@ -30,7 +30,7 @@ def get_expanded_cell_corner_points(crystal_cell_lattice, neighbourhood_rCut):
 
 	# =================================================================================================================================
 	# First, obtain all the lattice point around the (0,0,0) point that are within neighbourhood_rCut distance from this origin point.
-	cell_points = []
+	cell_points = [(0,0,0)]
 	for max_index in count(start=1, step=1):
 		continue_to_expand = False
 		# Get all the values around the origin in the current max layer of lattice points
@@ -67,8 +67,11 @@ def get_expanded_cell_corner_points(crystal_cell_lattice, neighbourhood_rCut):
 		surrounding_cell_points.remove(zero_point)
 
 	# =================================================================================================================================
+	# Third, remove the (0,0,0) cell from the cell_points. We only want to include non-orgin cells in cell_points (and surrounding_cell_points)
+	cell_points.remove((0,0,0))
 
-	# Third, return cell_points and surrounding_cell_points
+	# =================================================================================================================================
+	# Fourth, return cell_points and surrounding_cell_points
 	return sorted(cell_points), sorted(surrounding_cell_points)
 
 	# =================================================================================================================================

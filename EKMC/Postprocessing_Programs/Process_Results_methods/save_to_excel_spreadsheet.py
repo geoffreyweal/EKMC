@@ -37,14 +37,14 @@ def save_to_excel_spreadsheet(data_foldername, data_for_excel):
 
     for index in trange(len(data_for_excel)):
 
-        root, time_average_energy, time_average_energy_sd, time_average_energy_ci, time_average_diffusion, time_average_diffusion_sd, time_average_diffusion_ci, time_average_diffusion_tensor, time_average_diffusion_tensor_sd, time_average_diffusion_tensor_ci, time_average_eigenvalues_of_diffusion_tensor, time_average_eigenvalues_of_diffusion_tensor_sd, time_average_eigenvalues_of_diffusion_tensor_ci, begin_recording_time, times, energetic_disorder, temperature = data_for_excel[index]
+        root, time_average_energy, time_average_energy_sd, time_average_energy_ci, time_average_diffusion, time_average_diffusion_sd, time_average_diffusion_ci, time_average_diffusion_tensor, time_average_diffusion_tensor_sd, time_average_diffusion_tensor_ci, time_average_eigenvalues_of_diffusion_tensor, time_average_eigenvalues_of_diffusion_tensor_sd, time_average_eigenvalues_of_diffusion_tensor_ci, begin_recording_time, endtime, energetic_disorder, temperature = data_for_excel[index]
 
         worksheet.write(0, 0+(interval_spacing*index), str(root))
 
         worksheet.write(2, 0+(interval_spacing*index), 'Start Recording Time for Averages')
         worksheet.write(2, 1+(interval_spacing*index), str(begin_recording_time)+' ps')
         worksheet.write(3, 0+(interval_spacing*index), 'End Simulation Time')
-        worksheet.write(3, 1+(interval_spacing*index), str(times[-1])+' ps')
+        worksheet.write(3, 1+(interval_spacing*index), str(endtime)+' ps')
 
         worksheet.write(5, 1+(interval_spacing*index), 'Time Average')
         worksheet.write(5, 2+(interval_spacing*index), 'Standard Deviation')

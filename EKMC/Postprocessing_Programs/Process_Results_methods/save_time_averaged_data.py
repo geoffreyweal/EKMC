@@ -10,7 +10,9 @@ from tqdm import trange
 from datetime import datetime, timedelta
 from xlsxwriter import Workbook
 
-def save_time_averaged_data(data_foldername, path, time_average_energy, time_average_energy_sd, time_average_energy_ci, time_average_diffusion, time_average_diffusion_sd, time_average_diffusion_ci, time_average_diffusion_tensor, time_average_diffusion_tensor_sd, time_average_diffusion_tensor_ci, time_average_eigenvalues_of_diffusion_tensor, time_average_eigenvalues_of_diffusion_tensor_sd, time_average_eigenvalues_of_diffusion_tensor_ci, begin_recording_time, times):
+kB = 8.617333262145 * (10.0 ** -5.0) # eV K-1
+
+def save_time_averaged_data(data_foldername, path, time_average_energy, time_average_energy_sd, time_average_energy_ci, time_average_diffusion, time_average_diffusion_sd, time_average_diffusion_ci, time_average_diffusion_tensor, time_average_diffusion_tensor_sd, time_average_diffusion_tensor_ci, time_average_eigenvalues_of_diffusion_tensor, time_average_eigenvalues_of_diffusion_tensor_sd, time_average_eigenvalues_of_diffusion_tensor_ci, begin_recording_time, endtime, energetic_disorder, temperature):
 
     print('Save data and figures to disk.')
     path_to_place_data_in = data_foldername+'/'+path
@@ -24,9 +26,12 @@ def save_time_averaged_data(data_foldername, path, time_average_energy, time_ave
         fileTXT.write('\n')
         fileTXT.write('Data given as: Average +- standard deviation (95%'+' confidence interval)\n')
         fileTXT.write('\n')
-        fileTXT.write('Taken from '+str(begin_recording_time)+' ps to '+str(times[-1])+' ps.\n')
+        fileTXT.write('Taken from '+str(begin_recording_time)+' ps to '+str(endtime)+' ps.\n')
         fileTXT.write('\n')
         fileTXT.write('Time Averaged Energy (eV):\t'+str(time_average_energy)+' +- '+str(time_average_energy_sd)+'\t('+str(time_average_energy_ci)+')\n')
+        energy_limit = -(energetic_disorder ** 2.0)/(kB * temperature)
+        fileTXT.write('Energy Limit (eV):\t'+str(energy_limit)+'\n')
+        fileTXT.write('\n')
         fileTXT.write('Time Averaged Diffusion Coefficient (cm^2 s^-1):\t'+str(time_average_diffusion)+' +- '+str(time_average_diffusion_sd)+'\t('+str(time_average_diffusion_ci)+')\n')
         fileTXT.write('\n')
         fileTXT.write('Time Averaged Diffusion Tensor (cm^2 s^-1):\n')

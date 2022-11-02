@@ -1,7 +1,7 @@
 # The information about the EKMC program
 
-__name__    = 'The EKMC Program'
-__version__ = '0.11'
+__name__    = 'EKMC'
+__version__ = '0.14'
 __author__  = 'Dr. Geoffrey Weal, Dr. Josh Sutton, Dr. Chayanit Wechwithayakhlung, Dr. Daniel Packwood, Dr. Paul Hume, Prof. Justin Hodgkiss'
 
 import sys, importlib
@@ -166,14 +166,13 @@ if not tqdm_found:
 
 # ------------------------------------------------------------------------------------------------------------------------
 
-__author_email__ = 'paul.hume@vuw.ac.nz'
+__author_email__ = 'geoffrey.hume@vuw.ac.nz'
 __license__ = 'GNU AFFERO GENERAL PUBLIC LICENSE'
-__url__ = 'https://github.com/GardenGroupUO/EKMC'
-__doc__ = 'See https://github.com/GardenGroupUO/EKMC for the documentation on this program'
+__url__ = 'https://github.com/geoffreyweal/EKMC'
+__doc__ = 'See https://github.com/geoffreyweal/EKMC for the documentation on this program'
 
-from EKMC.EKMC_Multi_Setup.EKMC_Multi_Setup import EKMC_Multi_Setup
 from EKMC.EKMC_Setup.EKMC_Setup             import EKMC_Setup
 from EKMC.EKMC.Run_EKMC                     import Run_EKMC
-__all__ = ['EKMC_Multi_Setup', 'EKMC_Setup', 'Run_EKMC']
+__all__ = ['EKMC_Setup', 'Run_EKMC']
 
 # ------------------------------------------------------------------------------------------------------------------------

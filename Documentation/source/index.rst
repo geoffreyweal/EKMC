@@ -1,38 +1,38 @@
-.. The ECCP documentation master file, created by
+.. The EKMC documentation master file, created by
    sphinx-quickstart on Mon Oct  1 08:10:30 2018.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to the Electronic Crystal Calculation Prep (ECCP) documentation!
-########################################################################
+Welcome to the Exciton kinetic Monte Carlo (EKMC) documentation!
+################################################################
 
-.. image:: https://img.shields.io/pypi/pyversions/ECCP
+.. image:: https://img.shields.io/pypi/pyversions/EKMC
    :target: https://docs.python.org/3/
    :alt: Python Version
 
 
-.. image:: https://img.shields.io/github/v/release/geoffreyweal/ECCP
-   :target: https://github.com/geoffreyweal/ECCP
+.. image:: https://img.shields.io/github/v/release/geoffreyweal/EKMC
+   :target: https://github.com/geoffreyweal/EKMC
    :alt: GitHub release (latest by date)
 
 
-.. image:: https://img.shields.io/pypi/v/ECCP
-   :target: https://pypi.org/project/ECCP/
+.. image:: https://img.shields.io/pypi/v/EKMC
+   :target: https://pypi.org/project/EKMC/
    :alt: PyPI
 
 
-.. image:: https://img.shields.io/conda/v/gardengroupuo/eccp
-   :target: https://anaconda.org/geoffreyweal/eccp
+.. image:: https://img.shields.io/conda/v/gardengroupuo/ekmc
+   :target: https://anaconda.org/geoffreyweal/ekmc
    :alt: Conda
 
 
-.. image:: https://img.shields.io/github/license/geoffreyweal/ECCP
+.. image:: https://img.shields.io/github/license/geoffreyweal/EKMC
    :target: https://www.gnu.org/licenses/agpl-3.0.en.html
    :alt: Licence
 
 
-.. image:: https://img.shields.io/lgtm/grade/python/github/geoffreyweal/ECCP
-   :target: https://lgtm.com/projects/g/geoffreyweal/ECCP/context:python
+.. image:: https://img.shields.io/lgtm/grade/python/github/geoffreyweal/EKMC
+   :target: https://lgtm.com/projects/g/geoffreyweal/EKMC/context:python
    :alt: LGTM Grade
 
 
@@ -43,20 +43,20 @@ Welcome to the Electronic Crystal Calculation Prep (ECCP) documentation!
 .. sectionauthor:: Dr. Paul Hume <paul.hume@vuw.ac.nz>
 .. sectionauthor:: Prof. Justin Hodgkiss <justin.hodgkiss@vuw.ac.nz>
 
-What is the Electronic Crystal Calculation Prep (ECCP) Program
-==============================================================
+What is the Exciton kinetic Monte Carlo (EKMC) Program
+======================================================
 
-The Electronic Crystal Calculation Prep (ECCP) program is designed to provide information about the molecules in a OPV crystal structure, as well as dimer between individual molecules. While this program was originally designed for OPV crystal, it can be used for a crystal made of any chemical system. 
+The Exciton kinetic Monte Carlo (EKMC) program is designed to simulate the diffusion of an exciton throughout a crystal structure. Here, an exciton begins on a molecule in the crystal. From there, the exciton hops to another molecule within the extended crystal structure based on probability as well as the excitonic coupling energies between molecules in the crystal. After repeating this process for a given amount of simulation time, and repeating the simulation many times, it is possible to determine the behaviour of excitons in the materials of interest. 
 
 Installation
 ============
 
-It is recommended to read the installation page before using the ECCP program. See :ref:`Installation: Setting Up ECCP and Pre-Requisites Packages <Installation>` for more information. Note that you can install ECCP through ``pip3`` and ``conda``. 
+It is recommended to read the installation page before using the EKMC program. See :ref:`Installation: Setting Up EKMC and Pre-Requisites Packages <Installation>` for more information. Note that you can install EKMC through ``pip3`` and ``conda``. 
 
-Guide To Using ECCP
+Guide To Using EKMC
 ===================
 
-After you have installed ECCP, see :ref:`Guide_To_Using_ECCP` to learn about how to use this program. 
+After you have installed EKMC, see :ref:`Guide_To_Using_EKMC` to learn about how to use this program. 
 
 Table of Contents
 =================
@@ -65,14 +65,11 @@ Table of Contents
    :maxdepth: 2
    
    Installation
-   Guide_To_Using_ECCP
-   Using_The_ECCP_Program
-   Molecule_and_Dimer_Methods
-   gaussian_parameters_and_submission_information_settings
+   Guide_To_Using_EKMC
+   Setting_Up_The_EKMC_Program
    Recommendation_For_Settings
-   manual_molecules
-   Examples_of_output_files
-   submitting_jobs_to_slurm
+   Running_The_EKMC_Program
+   What_will_happen_when_you_run_Run_EKMC_py
    postprocessing_data
    Troubleshooting
    genindex

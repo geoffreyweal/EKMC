@@ -1,123 +1,167 @@
 """
-EKMC_Setup.py, Geoffrey Weal, 12/8/22
+EKMC_Multi_Setup.py, Geoffrey Weal, 12/8/
 
-This script is designed to set up the files needed for runningt the excitonic kinetic Monte Carlo algorithm. 
-
+This program is designed to setup the exciton kMC algorithm for performing multiple repeats of the same simulation in slurm
 """
 import os
+from EKMC.EKMC_Only_Setup.EKMC_Only_Setup import EKMC_Only_Setup
+from EKMC.EKMC_Setup.Create_submitSL_slurm_Main import make_mass_submitSL_full, make_mass_submitSL_packets
 
-from numpy import array_equal
+exciton_filename = 'Run_EKMC.py'
+mass_submit_filename = 'mass_submit.sl'
 
-from EKMC.EKMC_Setup.get_molecules                               import get_molecules
-from SUMELF                                                      import obtain_graph
-from EKMC.EKMC_Setup.add_charges_to_molecules                    import add_charges_to_molecules
-from EKMC.EKMC_Setup.get_electronic_coupling_data                import get_electronic_coupling_data
-from EKMC.EKMC_Setup.get_neighbours_to_molecules_in_central_cell import get_neighbours_to_molecules_in_central_cell
-from SUMELF                                                      import remove_folder, make_folder
-
-def EKMC_Setup(molecules_path, ATC_folder_path, functional_and_basis_set, kinetic_model, dimer_couplings, kinetics_details, neighbourhood_rCut=40.0, path_to_KMC_setup_data=''):
+def EKMC_Setup(EKMC_settings, mass_submission_information, no_of_cpus_for_setup=1):
 	"""
-	This program is designed to simulate the movement of an exciton through a OPV crystal system.
+	This method is designed to setup the exciton kMC algorithm for performing multiple repeats of the same simulation in slurm.
 
 	Parameters
 	----------
-	molecules_path : str.
-		The path to the molecules that make up the crystal, as obtained from the ECCP program. 
-	ATC_folder_path : str.
-		A folder that contains all the .chg files.
-	functional_and_basis_set : str.
-		This is the folder name for the functional and basis set used in calculations. This name is given from the ECCP program. 
-	kinetic_model : str.
-		This is the type of kinetic model you would like to use.
-	dimer_couplings : dict.
-		This dictionary contains all the energetic information about the dimers (such as EET energies).
-	kinetics_details : dict.
-		This contains all the information required to obtain the rate constants (except for electronic coupling and ATC charge data)
-	neighbourhood_rCut : float
-		This is the maximum distance that two molecules in the dimer can be to be in the neighbourhood. 
-		This variable defines how far from one molecule to determine the coulombic energy between itself and another molecule. 
-		This is to include the possibility that the exciton will jump between molecules that are very far from each other based on their dipole rather than orbital overlap. Default: 40.0 A. 
-	path_to_KMC_setup_data : str.
-		This is the path to the ekmc file that contains all the information about the ekmc simulation for this crystal.
+	EKMC_settings : dict.
+		This contains the information about the crystal you want to simulate using this kMC program
+	mass_submission_information : list of dicts.
+		This contains the information required for the mass_submit.sl files, for submitting jobs to slurm.
+	no_of_cpus_for_setup : int.
+		This is the number of cpus used to setup the EKMC simulations.
 	"""
 
-	# First, get the absolute path to the folders that we will be looking at.
+	# First, get the file names and paths of data to obtain local neighbourhood data for
+	folder_name     = EKMC_settings['folder_name']
+	molecules_path  = EKMC_settings['molecules_path']
 	crystal_name    = os.path.basename(molecules_path)
-	molecules_path  = os.path.abspath(molecules_path)
-	ATC_folder_path = os.path.abspath(ATC_folder_path)
 
-	# Second, get the molecules that make up the crystal, and the crystal lattice.
-	molecules = get_molecules(molecules_path)
-	if not all([array_equal(molecules[index].get_cell()[:], molecules[0].get_cell()[:]) for index in range(1,len(molecules))]):
-		raise Exception('Error. Not all the unit cells of the molecules in your crystal are the same. Check the unit cells of your molecules out.')
-	crystal_cell_lattice = molecules[0].get_cell()
+	# Second, obtain the functional and basis set settings used for this simulation
+	functional_and_basis_set = EKMC_settings['functional_and_basis_set']
 
-	# Third, get the graphs of molecules
-	molecule_graphs = [obtain_graph(molecules[index],mic=False,name='molecule_'+str(index)) for index in range(len(molecules))]
+	# Third, obtain the kinetic model that you would like to use for performing the kinetic monte carlo algorithm.
+	kinetic_model = EKMC_settings['kinetic_model']
 
-	# Fourth, add charges to molecules from chg files in ATC folder. The charges added to the molecules are the atomic transition charges. 
-	add_charges_to_molecules(molecules, molecule_graphs, ATC_folder_path, functional_and_basis_set)
+	# Fourth, obtain information about the dimers, kinetic details, and neighbourhood cut-off from EKMC_settings
+	short_range_couplings = EKMC_settings['short_range_couplings']
+	long_range_couplings  = EKMC_settings['long_range_couplings']
 
-	# Fifth, obtain electronic coupling energies from dimers.
-	electronic_coupling_data = get_electronic_coupling_data(dimer_couplings, crystal_name, functional_and_basis_set, molecules_path)
+	# Fourth, obtain information about the dimers, kinetic details, and neighbourhood cut-off from EKMC_settings
+	kinetics_details   = EKMC_settings['kinetics_details']
+	neighbourhood_rCut = EKMC_settings['neighbourhood_rCut']
 
-	# Sixth, Get the names of the neighbourhood dictionary keys to obtain.
-	names = ['relative_permittivity']
-	if   kinetic_model.lower() == 'marcus':
-		names += ['classical_reorganisation_energy','temperature']
-	elif kinetic_model.lower() == 'mlj':
-		names += ['huang_rhys_factor','uu_max','vv_max','WW','classical_reorganisation_energy','temperature']
-	else:
-		raise Exception('Error: kinetic_model must be either "Marcus" or "MLJ". kinetic_model = '+str(kinetic_model))
+	# Fifth, begin creating Run_EKMC.py files for running the excitonic kinetic Monte Carlo algorithm.  
+	print('#########################################################################')
+	print('#########################################################################')
+	print('#########################################################################')
+	print('      Setting up: '+str(crystal_name))
+	print('#########################################################################')
+	print('#########################################################################')
+	print('#########################################################################')
 
-	# Seventh, get the neighbourhood dictionary between molecules within a neighbourhood_rCut range.
-	non_changing_lattice_kinetics_details = {}
-	for name in names:
-		non_changing_lattice_kinetics_details[name] = kinetics_details[name]
-	all_local_neighbourhoods = get_neighbours_to_molecules_in_central_cell(kinetic_model, molecules, crystal_cell_lattice, electronic_coupling_data, non_changing_lattice_kinetics_details, neighbourhood_rCut=40.0)
+	# Sixth, get the path to store this simulation in.
+	path_to_simulation = os.getcwd()+'/'+'EKMC_Simulations'+'/'+folder_name+'/'+functional_and_basis_set
 
-	# Eighth, add disorder values to the non_changing_lattice_kinetics_details dictionary.
-	names = ['coupling_disorder', 'energetic_disorder']
-	for name in names:
-		non_changing_lattice_kinetics_details[name] = kinetics_details[name]
+	# Seventh, setup the kMC simulations and get the exciton kMC setup files for performing simulations, and put it in the path_to_simulation folder
+	EKMC_Only_Setup(molecules_path, functional_and_basis_set, kinetic_model, short_range_couplings, long_range_couplings, kinetics_details, neighbourhood_rCut=neighbourhood_rCut, path_to_KMC_setup_data=path_to_simulation, no_of_cpus_for_setup=no_of_cpus_for_setup)
 
-	# Ninth, save this data to disk
-	save_KMC_data_to_disk(path_to_KMC_setup_data, molecules, crystal_cell_lattice, kinetic_model, non_changing_lattice_kinetics_details, all_local_neighbourhoods)
+	# Eighth, get information for creating the Run_EKMC.py file
+	sim_time_limit = EKMC_settings.get('sim_time_limit',float('inf'))
+	max_no_of_steps = EKMC_settings.get('max_no_of_steps','inf')
+	store_data_in_databases = EKMC_settings.get('store_data_in_databases',False)
+	no_of_molecules_at_cell_points_to_store_on_RAM = EKMC_settings.get('no_of_molecules_at_cell_points_to_store_on_RAM',None)
 
-# ==================================================================================================================================================================================================
+	# Ninth, create the Run_EKMC.py for performing kMC simulatinos on the exciton
+	print('-----------------------------------------------------')
+	print('MAKING '+str(exciton_filename)+' FILE')
+	make_Run_EKMC_file(path_to_simulation=path_to_simulation, path_to_KMC_setup_data='..', sim_time_limit=sim_time_limit, max_no_of_steps=max_no_of_steps, store_data_in_databases=store_data_in_databases, no_of_molecules_at_cell_points_to_store_on_RAM=no_of_molecules_at_cell_points_to_store_on_RAM)
 
-def save_KMC_data_to_disk(path_to_KMC_setup_data, molecules, crystal_cell_lattice, kinetic_model, kinetics_details, all_local_neighbourhoods):
+	# Tenth, create the mass_submit.sl for submitting a number of repeated simulation to slurm
+	print('-----------------------------------------------------')
+	print('MAKING '+str(mass_submit_filename)+' FILE')
+	make_mass_submit_file(path_to_simulation=path_to_simulation, crystal_name=crystal_name, functional_and_basis_set=functional_and_basis_set, mass_submission_information=mass_submission_information)
+	print('-----------------------------------------------------')
+
+	print('#########################################################################')
+	print('#########################################################################')
+	print('#########################################################################')
+
+def make_Run_EKMC_file(path_to_simulation, path_to_KMC_setup_data, sim_time_limit, max_no_of_steps, store_data_in_databases, no_of_molecules_at_cell_points_to_store_on_RAM):
 	"""
-	This method is designed to save the data required to simulate the exciton kmc simulation, including the electronic details of the local behaviour of each molecule in the crystal.
+	This method is designed to create the Run_EKMC.py for performing the KMC simulation.
 
 	Parameters
 	----------
+	path_to_simulation : str.
+		This is the path to save this Run_EKMC.py file to.
 	path_to_KMC_setup_data : str.
 		This is the path to the ekmc file that contains all the information about the ekmc simulation for this crystal.
-	molecules : list of ase.Atoms
-		This is the list of molecules in the crystal
-	crystal_cell_lattice : ase.Cell
-		This contain information about the unit cell.
-	kinetic_model : str.
-		This is the type of kinetic model you would like to use.
-	kinetics_details : dict.
-		This contains all the information required to obtain the rate constants (except for electronic coupling and ATC charge data)
-	all_local_neighbourhoods : dict.
-		This dictionary contains all the information about the neighbourhoods that surrounded each molecule in your crystal.
+	sim_time_limit : float
+		This is the maximum simulated time limit to run the kinetic Monte Carlo simulation over.
+	max_no_of_steps : int
+		This is the maximum number of kmc steps to run the kinetic Monte Carlo simulation over.
+	store_data_in_databases : bool.
+		To do.
+	no_of_molecules_at_cell_points_to_store_on_RAM : int
+		This is the maximum number of entries to maintain in the RAM memory in the graph.
+	"""
+	with open(path_to_simulation+'/'+exciton_filename, 'w') as EKMC_PY:
+		EKMC_PY.write('"""\n')
+		EKMC_PY.write('This script will allow you to perform a Exciton-based kinetic Monte-Carlo simulation on your crystal.\n')
+		EKMC_PY.write('"""\n')
+		EKMC_PY.write('\n')
+		EKMC_PY.write('from EKMC import Run_EKMC'+'\n')
+		EKMC_PY.write('\n')
+		EKMC_PY.write('# First, give the path to the KMC_setup_data, which has been run previously.\n')
+		EKMC_PY.write('# This file contains all the kinetic information and the electronic information around the local neighbourhood of each molecule in the crystal.\n')
+		EKMC_PY.write(f'path_to_KMC_setup_data="{path_to_KMC_setup_data}"\n')
+		EKMC_PY.write('\n')
+		EKMC_PY.write('# Second, give the amount of time or the number of steps you would like to simulate.\n')
+		EKMC_PY.write(f'sim_time_limit = {sim_time_limit}'+'\n')
+		if isinstance(max_no_of_steps,str):
+			max_no_of_steps = '"'+max_no_of_steps+'"'
+		EKMC_PY.write(f'max_no_of_steps = {max_no_of_steps}'+'\n')
+		EKMC_PY.write('\n')
+		EKMC_PY.write('# Third, if you want to store data about the random energetic and coupling disorders in databases, provide the information required to use a database here.\n')
+		EKMC_PY.write(f'store_data_in_databases = {store_data_in_databases}'+'\n')
+		EKMC_PY.write(f'no_of_molecules_at_cell_points_to_store_on_RAM = {no_of_molecules_at_cell_points_to_store_on_RAM}'+'\n')
+		EKMC_PY.write('\n')
+		EKMC_PY.write('# Fourth, perform the exciton kinetic Monte Carlo simulation.\n')
+		EKMC_PY.write('Run_EKMC(path_to_KMC_setup_data=path_to_KMC_setup_data, sim_time_limit=sim_time_limit, max_no_of_steps=max_no_of_steps, store_data_in_databases=store_data_in_databases, no_of_molecules_at_cell_points_to_store_on_RAM=no_of_molecules_at_cell_points_to_store_on_RAM)'+'\n')
+
+def make_mass_submit_file(path_to_simulation, crystal_name, functional_and_basis_set, mass_submission_information):
+	"""
+	This method is designed to create the Run_EKMC.py for performing the KMC simulation/
+
+	Parameters
+	----------
+	path_to_simulation : str.
+		This is the path to save this Run_EKMC.py file to.
+	crystal_name : str.
+		This is the name of the crystal file.
+	functional_and_basis_set : str.
+		This is the names of the functional and basis set you are using. Refer to the ECCP program info.
+	mass_submission_information : dict.
+		This is all the information required for submitting the exciton kinetic Monte Carlo algorithm on slurm using ArrayJobs.
 	"""
 
-	# First, make the folder to place the KMC_setup_data.ekmc file in 
-	#remove_folder(path_to_KMC_setup_data)
-	make_folder(path_to_KMC_setup_data)
+	# First, get all the variables for making the mass_submit.sl file with
+	job_name         = crystal_name+'_'+functional_and_basis_set
+	ntasks_per_node  = mass_submission_information['ntasks_per_node']
+	mem              = mass_submission_information['mem']
+	time             = mass_submission_information['time']
+	partition        = mass_submission_information['partition']
+	constraint       = mass_submission_information.get('constraint',None)
+	email            = mass_submission_information.get('email', '')
+	python_version   = mass_submission_information.get('python_version', 'python/3.8.1')
+	project          = mass_submission_information.get('project',None)
+	nodes            = mass_submission_information.get('nodes',1)
 
-	# Second, create the KMC_setup_data.ekmc file.
-	path_to_file = path_to_KMC_setup_data+'/'+f'KMC_setup_data.ekmc'
-	with open(path_to_file,'w') as KMC_setup_data:
-		KMC_setup_data.write(str([tuple(molecule.get_center_of_mass()) for molecule in molecules])+'\n')
-		KMC_setup_data.write(str(tuple([tuple(xx) for xx in crystal_cell_lattice[:]]))+'\n')
-		KMC_setup_data.write(str(kinetic_model)+'\n')
-		KMC_setup_data.write(str(kinetics_details)+'\n')
-		KMC_setup_data.write(str(all_local_neighbourhoods)+'\n')
-
-# ==================================================================================================================================================================================================
+	# Second, determine the number of simulatinos you would like to perform, and make the mass_submit.sl file.
+	submission_type = mass_submission_information['submission_type']
+	no_of_simulations = mass_submission_information['no_of_simulations']
+	if submission_type == 'full':
+		make_mass_submitSL_full(path_to_simulation,job_name,project,no_of_simulations,time,nodes,ntasks_per_node,mem,None,partition,constraint,email,python_version)
+	elif submission_type == 'packet':
+		no_of_packets_to_make = mass_submission_information['no_of_packets_to_make']
+		make_mass_submitSL_packets(path_to_simulation,job_name,project,no_of_simulations,no_of_packets_to_make,time,nodes,ntasks_per_node,mem,None,partition,constraint,email,python_version)
+	else:
+		print('Error in def make_mass_submit_file, in EKMC_Multi_Setup.py')
+		print('Your input for the "submission_type" tag in the mass_submission_information dictionary must be either:')
+		print('  * full: Perform "no_of_simulations" number of individual simulations in "no_of_simulations" submitted jobs.')
+		print('  * packet: Perform "no_of_simulations" number of individual simulations in "no_of_packets_to_make" submitted jobs.')
+		exit('Check this out and try this program again. This program will finish without continuing')
 

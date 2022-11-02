@@ -62,8 +62,8 @@ source_suffix = '.rst'
 master_doc = 'index'
 
 # General information about the project.
-from ECCP import __author__
-project = u'The Electronic Crystal Calculation Prep Program'
+from EKMC import __author__
+project = u'The Exciton kinetic Monte Carlo (EKMC) Program'
 copyright = u'2022, '+__author__
 author = u''+__author__
 
@@ -72,7 +72,7 @@ author = u''+__author__
 # built documents.
 #
 # The short X.Y version.
-from ECCP import __version__
+from EKMC import __version__
 def get_version_number():
     version = __version__
     return version
@@ -114,7 +114,7 @@ todo_include_todos = False
 # a list of builtin themes.
 #
 html_theme = "sphinx_rtd_theme"
-html_logo = 'Images/icon_image/icon_drawing_github.png'
+#html_logo = 'Images/icon_image/icon_drawing_github.png'
 #html_theme_path = ["themes"]
 html_theme_options = {
     'canonical_url': '',
@@ -250,7 +250,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 'ECCP.tex', u'The ECCP Documentation',
+    (master_doc, 'EKMC.tex', u'The EKMC Documentation',
      str(__author__), 'manual'),
 ]
 
@@ -260,7 +260,7 @@ latex_documents = [
 # One entry per manual page. List of tuples
 # (source start file, name, description, authors, manual section).
 man_pages = [
-    (master_doc, 'ECCP', u'The ECCP Documentation',
+    (master_doc, 'EKMC', u'The EKMC Documentation',
      [author], 1)
 ]
 
@@ -271,8 +271,8 @@ man_pages = [
 # (source start file, target name, title, author,
 #  dir menu entry, description, category)
 texinfo_documents = [
-    (master_doc, 'ECCP', u'The ECCP Documentation',
-     author, 'ECCP', 'This program is designed to set up Gaussian electronic calculations for crystals.',
+    (master_doc, 'EKMC', u'The EKMC Documentation',
+     author, 'EKMC', 'This program is designed to perform kinetic Monte Carlo simulations to simulate the diffusion of excitons in a organic photovoltaic crystal.',
      'Research'),
 ]
 

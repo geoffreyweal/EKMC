@@ -26,6 +26,9 @@ def process_data(all_sims, centre_of_masses, unit_cell_matrix, sim_time_limit, n
     # Second, obtain the distance from the starting point across all ensembles.
     print('Get the displacement vectors from the ensemble of simulations')
     positions_at_time, displacement_vectors_from_initial_position, energies_over_time_for_all_sims = get_sample_data_from_ensemble_over_time(data_over_time_for_all_sims, centre_of_masses, unit_cell_matrix, cpu_count=cpu_count)
+    
+    # Third, delete the data_over_time_for_all_sims which contains a lot of information that is not needed anymore. 
+    del data_over_time_for_all_sims
 
     # Third, obtain the displacement and displacement^2 values.
     print('Get the displacements from the ensemble of simulations')

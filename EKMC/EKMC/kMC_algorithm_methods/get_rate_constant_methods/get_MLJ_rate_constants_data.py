@@ -9,7 +9,6 @@ from numpy.random import normal, uniform
 from random import choice, choices
 
 def get_MLJ_rate_constants_data(current_molecule_description, all_local_neighbourhoods, energetic_disorder, coupling_disorder, graph):
-
 	current_molecule_deltaE_disorder, neighbouring_molecule_descriptions, rate_constants = get_rate_constants_to_connecting_molecules(current_molecule_description, all_local_neighbourhoods, energetic_disorder, coupling_disorder, graph)
 	return current_molecule_deltaE_disorder, neighbouring_molecule_descriptions, rate_constants
 
@@ -65,7 +64,7 @@ def get_rate_constants_to_connecting_molecules(current_molecule_description, all
 
 	# Fourth, obtain all the rate constants and data for an exciton moving from the current molecule to another molecule that maybe in another unit cell.
 	for neighbouring_molecule_name in local_neighbourhoods.keys():
-		for relative_cell_point, (M_constant, X_constant, non_changing_across_lattice_data_for_uv_inputs) in local_neighbourhoods[neighbouring_molecule_name]:
+		for relative_cell_point, (M_constant, X_constant, non_changing_across_lattice_data_for_uv_inputs) in local_neighbourhoods[neighbouring_molecule_name].items():
 			# 4.1: Get the exist cell_point for the other molecule from current_cell_point + relative_cell_point
 			neighbouring_cell_point = tuple(a+b for a, b in zip(current_cell_point, relative_cell_point))
 			neighbouring_molecule_description = (neighbouring_molecule_name, neighbouring_cell_point)

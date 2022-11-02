@@ -1,10 +1,10 @@
 
 .. _Installation:
 
-Installation: Setting Up ECCP and Pre-Requisites Packages
+Installation: Setting Up EKMC and Pre-Requisites Packages
 #########################################################
 
-In this article, we will look at how to install the ECCP and all requisites required for this program.
+In this article, we will look at how to install the EKMC and all requisites required for this program.
 
 Pre-requisites
 ==============
@@ -89,10 +89,23 @@ If you get back a list of python packages install on your computer, you have ``p
 
 If you do not see this, you probably do not have ``pip`` installed on your computer. If this is the case, check out `PIP Installation <https://pip.pypa.io/en/stable/installing/>`_. 
 
+
+.. note::
+
+	In most cases, ``pip`` and ``pip3`` are synonymous for the Python Installation Package for Python 3. **However in some cases,** ``pip`` **will be directed to the Python Installation Package for Python 2 rather than Python 3.** To check this, run in the terminal:
+
+	.. code-block:: bash
+
+		pip --version
+
+	If the output indicates you this Python Installation Package is for Python 2 and not Python 3, only install packages using the ``pip3`` name. 
+
+	For the rest of this documentation, ``pip`` will be used, however if your computer's ``pip``  refers to Python 2 and not Python 3, use ``pip3``  instead of ``pip``. 
+
 Atomic Simulation Environment (ASE)
 -----------------------------------
 
-The Electronic Crystal Calculation Prep program uses the Atomic Simulation Environment (ASE) to read in the crystal data from various file format, to process the crystals, and to save the molecules and dimers found in the crystal to the preferred file type. Read more about `ASE here <https://wiki.fysik.dtu.dk/ase/>`_. 
+The Exciton kinetic Monte Carlo (EKMC) program uses the Atomic Simulation Environment (ASE) to read in the crystal data from various file format, to process the crystals, and to save the molecules and dimers found in the crystal to the preferred file type. Read more about `ASE here <https://wiki.fysik.dtu.dk/ase/>`_. 
 
 The installation of ASE can be found on the `ASE installation page <https://wiki.fysik.dtu.dk/ase/install.html>`_, however from experience if you are using ASE for the first time, it is best to install ASE using ``pip``, the package manager that is an extension of python to keep all your program easily managed and easy to import into your python. 
 
@@ -139,7 +152,7 @@ This will give a bunch of information, including the location of ase on your com
 	Requires: matplotlib, scipy, numpy
 	Required-by: 
 
-Copy the 'Location' line. If we remove the 'lib/python/site-packages' bit and replace it with 'bin', this gives us the location of useful ASE programs. The example below is for Python 3.6. 
+Copy the ``Location`` line. If we remove the ``lib/python/site-packages`` bit and replace it with ``bin``, this gives us the location of useful ASE programs. The example below is for Python 3.6. 
 
 .. code-block:: bash
 
@@ -156,34 +169,23 @@ Next, add this to your ``~/.bashrc`` file as below:
 
 Write ``source ~/.bashrc`` in the terminal and press enter. Once you have done this, try to run ``ase gui`` in the terminal. This will hopefully show the ase gui and allow you to access the useful ASE programs through the terminal. 
 
-Networkx
---------
-
-``Networkx`` is a python program that is used in the Electronic Crystal Calculation Prep program to determine individual molecules in a crystal structure, as well as to help reconstructure molecules in the crystal into more human-friendly versions. The easiest way to install ``Networkx`` is though ``pip``. Type the following into the terminal:
-
-.. code-block:: bash
-
-	pip install --upgrade --user networkx
-
-Pymatgen
---------
-
-``Pymatgen`` is a python program that is used in the Electronic Crystal Calculation Prep program to determine symmetric molecules within a crystal structure. The easiest way to install ``Pymatgen`` is though ``pip``. Type the following into the terminal:
-
-.. code-block:: bash
-
-	pip install --upgrade --user pymatgen
-
-This package and other required packages may take a bit of time to install. 
-
 Packaging
 ---------
 
-The ``packaging`` program is also used in this program to check the versions of ASE that you are using for compatibility issues. The easiest way to install ``packaging`` is though ``pip``. Type the following into the terminal:
+The ``packaging`` program is used in this program to check the versions of ASE that you are using for compatibility issues. The easiest way to install ``packaging`` is though ``pip``. Type the following into the terminal:
 
 .. code-block:: bash
 
 	pip install --upgrade --user packaging
+
+Networkx
+--------
+
+``Networkx`` is a python program that is used in the Exciton kinetic Monte Carlo (EKMC) program to determine individual molecules in a crystal structure during the initial setup of the EKMC algorithm. The easiest way to install ``Networkx`` is though ``pip``. Type the following into the terminal:
+
+.. code-block:: bash
+
+	pip install --upgrade --user networkx
 
 TQDM
 ----
@@ -197,153 +199,88 @@ The ``tqdm`` program is used by this program to provide progress bars that are u
 Xlsxwriter
 ----------
 
-The ``xlsxwriter`` program is used by this program to write the output data from Gaussian jobs to an excel file(s). The easiest way to install ``xlsxwriter`` is though ``pip``. Type the following into the terminal:
+The ``xlsxwriter`` program is used by this program to process the kinetic Monte Carlo simulations to an excel file(s). The easiest way to install ``xlsxwriter`` is though ``pip``. Type the following into the terminal:
 
 .. code-block:: bash
 
-	pip3 install --upgrade --user xlsxwriter
-
-Xlsxwriter
-----------
-
-The ``memory_profiler`` program is a really useful program for determining how much memory is being used by a python program or any program using python. It is used here to determine how much memory is being used to process matrix data from ``output.log`` files. The easiest way to install ``memory_profiler`` is though ``pip``. Type the following into the terminal:
-
-.. code-block:: bash
-
-	pip3 install --upgrade --user memory_profiler
-
-Multiwfn
---------
-
-Multiwfn is a program that is designed to determine the charge of atoms in a molecule from a ``.wfn`` file obtained from Gaussian. This program is required if you are wanting to perform Atomic Transition Charge (ATC) calculations. To install this program in a Unix based operating system (Unix or MacOS):
-
-1. Download 3.8(dev)/Multiwfn_3.8_dev_bin_Linux_noGUI.zip from https://mega.nz/folder/HVcjECZS#rGG6dCO57AwpdCgYaQ3apg
-2. Unzip it in the place you want to hold it on your computer on on the computer cluster.
-3. Write ``pwd`` into the terminal where you unzipped the file (for example: ``/nfs/home/wealge/Multiwfn/Multiwfn_3.8_dev_bin_Linux_noGUI``)
-4. Write the following into your bashrc file (by writing ``vim ~/.bashrc`` into the terminal):
-
-To add into your bashrc
-
-.. code-block:: bash
-
-	###################################
-	# Multiwfn stuff
-	export KMP_STACKSIZE=200M
-	ulimit -s unlimited
-
-	export Multiwfnpath='WRITE/HERE/THE_PATH_TO_YOUR_Multiwfn_DIRECTORY'
-	export PATH=$Multiwfnpath:$PATH
-	###################################
-
-For example:
-
-.. code-block:: bash
-
-	###################################
-	# Multiwfn stuff
-	export KMP_STACKSIZE=200M
-	ulimit -s unlimited
-
-	export Multiwfnpath='/nfs/home/wealge/Multiwfn/Multiwfn_3.8_dev_bin_Linux_noGUI'
-	export PATH=$Multiwfnpath:$PATH
-	###################################
-
-5. Source the bashrc file (by writing ``source ~/.bashrc`` into the terminal)
-
-To check that you can run this program in the terminal write ``cd`` in the terminal, and then write ``Multiwfn`` in the terminal. If the program is working, the ``Multiwfn`` will begin and you will see the following message:
-
-.. code-block:: bash
-
-	Multiwfn -- A Multifunctional Wavefunction Analyzer
-	Version 3.8(dev), release date: 2022-Apr-2
-	Developer: Tian Lu (Beijing Kein Research Center for Natural Sciences)
-	Below paper ***MUST BE CITED*** if Multiwfn is utilized in your work:
-	        Tian Lu, Feiwu Chen, J. Comput. Chem., 33, 580-592 (2012)
-	See "How to cite Multiwfn.pdf" in Multiwfn binary package for more information
-	Multiwfn official website: http://sobereva.com/multiwfn
-	Multiwfn English forum: http://sobereva.com/wfnbbs
-	Multiwfn Chinese forum: http://bbs.keinsci.com/wfn
-
-To cancel out of this, type ``ctrl + c`` or ``ctrl + z`` into the terminal and this should exit out of the program.
-
-See http://sobereva.com/multiwfn/ and the ``Multiwfn_3.8_dev.pdf`` file in https://mega.nz/folder/HVcjECZS#rGG6dCO57AwpdCgYaQ3apg (Chapter 2.1.2) for more information about how to install Multiwfn on your system.
+	pip install --upgrade --user xlsxwriter
 
 
-Setting up the Electronic Crystal Calculation Prep program
-==========================================================
+Setting up the Exciton kinetic Monte Carlo (EKMC) program
+=========================================================
 
-There are three ways to install ECCP on your system. These ways are described below:
+There are three ways to install EKMC on your system. These ways are described below:
 
-Install ECCP through ``pip3``
+Install EKMC through ``pip3``
 -----------------------------
 
-To install the ECCP program using ``pip3``, perform the following in your terminal.
+To install the EKMC program using ``pip3``, perform the following in your terminal.
 
 .. code-block:: bash
 
-	pip3 install --upgrade --user ECCP
+	pip install --upgrade --user EKMC
 
-The website for ECCP on ``pip3`` can be found by clicking the button below:
+The website for EKMC on ``pip3`` can be found by clicking the button below:
 
-.. image:: https://img.shields.io/pypi/v/ECCP
-   :target: https://pypi.org/project/ECCP/
+.. image:: https://img.shields.io/pypi/v/EKMC
+   :target: https://pypi.org/project/EKMC/
    :alt: PyPI
 
 
-Install ECCP through ``conda``
+Install EKMC through ``conda``
 ------------------------------
 
-You can also install ECCP through ``conda``, however I am not as versed on this as using ``pip3``. See `docs.conda.io <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html>`_ to see more information about this. Once you have installed anaconda on your computer, I believe you install ECCP using ``conda`` by performing the following in your terminal.
+You can also install EKMC through ``conda``, however I am not as versed on this as using ``pip3``. See `docs.conda.io <https://docs.conda.io/projects/conda/en/latest/user-guide/tasks/manage-pkgs.html>`_ to see more information about this. Once you have installed anaconda on your computer, I believe you install EKMC using ``conda`` by performing the following in your terminal.
 
 .. code-block:: bash
 
 	conda install ase
-	conda install eccp
+	conda install ekmc
 
-The website for ECCP on ``conda`` can be found by clicking the button below:
+The website for EKMC on ``conda`` can be found by clicking the button below:
 
-.. image:: https://img.shields.io/conda/v/geoffreyweal/eccp
-   :target: https://anaconda.org/geoffreyweal/eccp
+.. image:: https://img.shields.io/conda/v/geoffreyweal/ekmc
+   :target: https://anaconda.org/geoffreyweal/ekmc
    :alt: Conda
 
 
 Manual installation
 -------------------
 
-First, download the Electronic Crystal Calculation Prep program to your computer. You can do this by cloning a version of this from Github, or obtaining a version of the program from the authors. If you are obtaining this program via Github, you want to ``cd`` to the directory that you want to place this program in on the terminal, and then clone the program from Github through the terminal as well: 
+First, download the EKMC program to your computer. You can do this by cloning a version of this from Github, or obtaining a version of the program from the authors. If you are obtaining this program via Github, you want to ``cd`` to the directory that you want to place this program in on the terminal, and then clone the program from Github through the terminal as well: 
 	
 .. code-block:: bash
 
-	cd PATH/TO/WHERE_YOU_WANT_TO_PLACE_ECCP_ON_YOUR_COMPUTER
-	git clone https://github.com/geoffreyweal/ECCP
+	cd PATH/TO/WHERE_YOU_WANT_TO_PLACE_EKMC_ON_YOUR_COMPUTER
+	git clone https://github.com/geoffreyweal/EKMC
 
 Next, you need to change permissions to use this program by using ``chmod``. In the terminal write:
 
 .. code-block:: bash
 
-	chmod -R 777 ECCP
+	chmod -R 777 EKMC
 
-Next, add a python path to it in your  ``~/.bashrc`` to indicate its location. Do this by entering into the terminal ``pwd`` where you cloned the Electronic Crystal Calculation Prep program into:
+Next, add a python path to it in your  ``~/.bashrc`` to indicate its location. Do this by entering into the terminal ``pwd`` where you cloned the EKMC program into:
 
 .. code-block:: bash
 
 	pwd
 
-This will give you the path to the Electronic Crystal Calculation Prep program. You want to enter the result from ``pwd`` into the ``~/.bashrc`` file. This is done as shown below:
+This will give you the path to the EKMC program. You want to enter the result from ``pwd`` into the ``~/.bashrc`` file. This is done as shown below:
 
 .. code-block:: bash
 
 	###################################
-	# Used for the Electronic Crystal Calculation Prep program 
+	# Used for the Exciton Kinetic Monte Carlo (EKMC) program 
 
-	export PATH_TO_ECCP="<Path_to_ECCP>" 
-	export PYTHONPATH="$PATH_TO_ECCP":$PYTHONPATH
-	export PATH="$PATH_TO_ECCP"/bin:$PATH
-	export PATH="$PATH_TO_ECCP"/ECCP/Subsidiary_Programs:$PATH
+	export PATH_TO_EKMC="<Path_to_EKMC>" 
+	export PYTHONPATH="$PATH_TO_EKMC":$PYTHONPATH
+	export PATH="$PATH_TO_EKMC"/bin:$PATH
+	export PATH="$PATH_TO_EKMC"/EKMC/Subsidiary_Programs:$PATH
 
 	###################################
 
-where ``"<Path_to_ECCP>"`` is the directory path that you place the Electronic Crystal Calculation Prep program (Enter in here the result you got from the ``pwd`` command). Once you have run ``source ~/.bashrc``, the Electronic Crystal Calculation Prep program should be all ready to go!
+where ``"<PATH_TO_EKMC>"`` is the directory path that you place the EKMC program (Enter in here the result you got from the ``pwd`` command). Once you have run ``source ~/.bashrc``, the EKMC program should be all ready to go!
 
 
 Other Useful things to know before you start
@@ -366,7 +303,7 @@ This alias is given below for you to also add to your ``~/.bashrc``:
 	alias no_of_jobs_running_or_queued="squeue -u $USER | wc -l"
 
 
-Summary of what you want in the ``~/.bashrc`` for the ECCP program if you manually installed ECCP
+Summary of what you want in the ``~/.bashrc`` for the EKMC program if you manually installed EKMC
 =================================================================================================
 
 You want to have the following in your ``~/.bashrc``:
@@ -374,12 +311,12 @@ You want to have the following in your ``~/.bashrc``:
 .. code-block:: bash
 
 	#########################################################
-	# Used for the Electronic Crystal Calculation Prep program 
+	# Used for the Exciton Kinetic Monte Carlo (EKMC) program
 
-	export PATH_TO_ECCP="<Path_to_ECCP>" 
-	export PYTHONPATH="$PATH_TO_ECCP":$PYTHONPATH
-	export PATH="$PATH_TO_ECCP"/bin:$PATH
-	export PATH="$PATH_TO_ECCP"/ECCP/Subsidiary_Programs:$PATH
+	export PATH_TO_EKMC="<Path_to_EKMC>" 
+	export PYTHONPATH="$PATH_TO_EKMC":$PYTHONPATH
+	export PATH="$PATH_TO_EKMC"/bin:$PATH
+	export PATH="$PATH_TO_EKMC"/EKMC/Subsidiary_Programs:$PATH
 
 	squeue -o "%.20i %.9P %.5Q %.50j %.8u %.8T %.10M %.11l %.6D %.4C %.6b %.20S %.20R %.8q" -u $USER --sort=+i
 

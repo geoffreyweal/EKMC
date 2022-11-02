@@ -184,6 +184,17 @@ def change_settings(args):
 
 # =========================================================================================================================================
 
+def is_sim_folder_in_directory(dirpath, dirnames):
+    """
+    This method is designed to determine if a EKMC simulation folder exists in the dirpath directory
+    """
+    for dirname in dirnames:
+        if os.path.exists(dirpath+'/'+dirname) and os.path.isdir(dirpath+'/'+dirname):
+            return True
+    return False
+
+# =========================================================================================================================================
+
 def Run_method(wait_between_submissions):
     '''
     Geoffrey Weal, Run_Adsorber_submitSL_slurm.py, 16/06/2021
@@ -328,7 +339,7 @@ def Run_method(wait_between_submissions):
             # Determine if this submission script has already been submitted.
             # This is best practise to prevent slurm from being overloaded with successful jobs (as they have already run completely) that end immediately.
             # Submit any jobs where some simulations have already begun by hand to prevent slurm breaking issues.
-            if any([('Sim' in dirname) for dirname in dirnames if os.path.isdir(dirpath+'/'+dirname)]):
+            if is_sim_folder_in_directory(dirpath, dirnames):
                 print('Found Sim folders in '+str(dirpath)+', indicating this has already been submitted. Will continue on.')
                 print('If you need to submit these jobs, it is best to do this by hand and submit only the ekmc_mass_submit.sl files that you need to submit.')
                 print('This is because if many of your simulations have already completed, they finish immediately.')

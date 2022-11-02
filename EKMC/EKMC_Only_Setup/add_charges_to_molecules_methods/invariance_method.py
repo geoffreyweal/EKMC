@@ -18,7 +18,7 @@ from scipy.spatial import procrustes
 
 from SUMELF import obtain_graph
 
-from EKMC.EKMC_Setup.add_charges_to_molecules_methods.methods_for_invariance_method.isomorphvf2_GRW import GraphMatcher
+from EKMC.EKMC_Only_Setup.add_charges_to_molecules_methods.methods_for_invariance_method.isomorphvf2_GRW import GraphMatcher
 from SUMELF import remove_hydrogens, get_distance
 
 def assigned_ATCs_to_molecules_invariance_method(atomic_transition_charges, molecules, molecule_graphs, max_disparity=None):

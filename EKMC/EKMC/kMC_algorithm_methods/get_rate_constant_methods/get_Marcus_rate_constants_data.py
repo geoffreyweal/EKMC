@@ -62,7 +62,7 @@ def get_rate_constants_to_connecting_molecules(current_molecule_description, all
 
 	# Fifth, obtain all the rate constants and data for an exciton moving from the current molecule to another molecule that maybe in another unit cell.
 	for neighbouring_molecule_name in local_neighbourhoods.keys():
-		for relative_cell_point, (coupling_energy, M_constant, X_constant, Y_constant, Z_constant) in local_neighbourhoods[neighbouring_molecule_name]:
+		for relative_cell_point, (coupling_energy, M_constant, X_constant, Y_constant, Z_constant) in local_neighbourhoods[neighbouring_molecule_name].items():
 
 			# 5.1: Get the exist cell_point for the other molecule from current_cell_point + relative_cell_point
 			neighbouring_cell_point = tuple(a+b for a, b in zip(current_cell_point, relative_cell_point))

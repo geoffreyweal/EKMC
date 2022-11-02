@@ -6,8 +6,8 @@ This script is designed to obtain all the values that are used in obtaining rate
 
 from math import exp, pi
 
-from EKMC.EKMC_Setup.get_neighbours_methods.get_probability_vibrostate_on_electstate_occupied import get_probability_vibrostate_on_electstate_occupied
-from EKMC.EKMC_Setup.get_neighbours_methods.get_franck_condon_overlap import get_franck_condon_overlap
+from EKMC.EKMC_Only_Setup.get_neighbours_methods.get_probability_vibrostate_on_electstate_occupied import get_probability_vibrostate_on_electstate_occupied
+from EKMC.EKMC_Only_Setup.get_neighbours_methods.get_franck_condon_overlap import get_franck_condon_overlap
 
 # Constants
 kB = 8.617333262145 * (10.0 ** -5.0) # eV K-1

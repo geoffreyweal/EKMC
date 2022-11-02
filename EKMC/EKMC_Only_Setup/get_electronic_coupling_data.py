@@ -7,17 +7,17 @@ import os
 
 from ase.io import read
 
-from EKMC.EKMC_Setup.get_electronic_coupling_data_methods.get_electronic_coupling_data_methods import read_dimer_data_from_All_Dimer_Information
-from EKMC.EKMC_Setup.get_electronic_coupling_data_methods.get_electronic_coupling_data_methods import read_dimer_data_from_Unique_Dimer_Information
-from EKMC.EKMC_Setup.get_electronic_coupling_data_methods.get_electronic_coupling_data_methods import get_EET_calculation_information
+from EKMC.EKMC_Only_Setup.get_electronic_coupling_data_methods.get_electronic_coupling_data_methods import read_dimer_data_from_All_Dimer_Information
+from EKMC.EKMC_Only_Setup.get_electronic_coupling_data_methods.get_electronic_coupling_data_methods import read_dimer_data_from_Unique_Dimer_Information
+from EKMC.EKMC_Only_Setup.get_electronic_coupling_data_methods.get_electronic_coupling_data_methods import get_EET_calculation_information
 
-def get_electronic_coupling_data(dimer_couplings, crystal_name, functional_and_basis_set, molecules_path):
+def get_electronic_coupling_data(short_range_couplings, crystal_name, functional_and_basis_set, molecules_path):
 	"""
 	This method will obtain the electronic coupling energies as calculated using the eet function in Gaussian between pairs of neighbouring molecules (dimers).
 
 	Parameters
 	----------
-	dimer_couplings : dict.
+	short_range_couplings : dict.
 		This dictionary includes the information required for obtaining dimer information.
 	crystal_name : str.
 		This is the name of the crystal.
@@ -33,23 +33,25 @@ def get_electronic_coupling_data(dimer_couplings, crystal_name, functional_and_b
 	"""
 
 	# First, if you do not want to use EET information, return an empty dictionary.
-	if not dimer_couplings['Use_non_atc_model_for_dimers']:
+	if (short_range_couplings['model'] is None) or (short_range_couplings['model'].lower() == 'none'):
 		return {}
-	path_to_dimer_information_file = dimer_couplings['path_to_dimer_information_file']
 
-	# Second, get the spatial information about the molecules that make up the dimer.
+	# Second, get the path to the dimers to obtain electronic coupling data from.
+	path_to_dimer_information_file = short_range_couplings['path_to_dimer_information_file']
+
+	# Third, get the spatial information about the molecules that make up the dimer.
 	all_dimer_information     = read_dimer_data_from_All_Dimer_Information(molecules_path)
 
-	# Third, determine which symmetric dimers are associated with which unique dimer that EET calculations were performed upon.
+	# Fourth, determine which symmetric dimers are associated with which unique dimer that EET calculations were performed upon.
 	symmetric_to_unique_dimer = read_dimer_data_from_Unique_Dimer_Information(molecules_path)
 
-	# Fourth, get electronic coupling energies from EET calculations
+	# Fifth, get electronic coupling energies from EET calculations
 	dimers_EET_information    = get_EET_calculation_information(path_to_dimer_information_file+'/Individual_EET_Data', crystal_name, functional_and_basis_set)
 
-	# Fifth, gather all spatial and EET calculation information together
+	# Sixth, gather all spatial and EET calculation information together
 	electronic_coupling_data  = combine_dict_information(all_dimer_information, dimers_EET_information, symmetric_to_unique_dimer)
 
-	# Sixth, return the electronic_coupling_data dictionary.
+	# Seventh, return the electronic_coupling_data dictionary.
 	return electronic_coupling_data
 
 def combine_dict_information(all_dimer_information, dimers_EET_information, symmetric_to_unique_dimer):

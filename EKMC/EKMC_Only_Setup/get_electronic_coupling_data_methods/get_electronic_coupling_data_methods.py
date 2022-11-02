@@ -79,30 +79,32 @@ def read_dimer_data_from_Unique_Dimer_Information(path_to_Unique_Dimer_Informati
     # First, create the unique_dimer_information dictionary.
     symmetric_to_unique_dimer = {}
 
-     # Second, open the Unique_Dimer_Information.txt file.
-    with open(path_to_Unique_Dimer_Information+'/Unique_Dimer_Information.txt','r') as Unique_Dimer_InformationTXT:
-        
-        # Third, pass over the first line in Unique_Dimer_Information.txt
-        Unique_Dimer_InformationTXT.readline()
-        
-        # Fourth, for each line in Unique_Dimer_Information.txt, starting from the second line.
-        for line in Unique_Dimer_InformationTXT:
+    # Second, open the Unique_Dimer_Information.txt file.
+    path_to_unique_dimers = path_to_Unique_Dimer_Information+'/Unique_Dimer_Information.txt'
+    if os.path.exists(path_to_unique_dimers):
+        with open(path_to_unique_dimers,'r') as Unique_Dimer_InformationTXT:
+            
+            # Third, pass over the first line in Unique_Dimer_Information.txt
+            Unique_Dimer_InformationTXT.readline()
+            
+            # Fourth, for each line in Unique_Dimer_Information.txt, starting from the second line.
+            for line in Unique_Dimer_InformationTXT:
 
-            # Fifth, strip the line.
-            line = line.rstrip().split()
+                # Fifth, strip the line.
+                line = line.rstrip().split()
 
-            # Sixth, obtain the dimer number for the symmetric (non-unique) dimer.
-            symmetric_dimer_number = int(line[0])
+                # Sixth, obtain the dimer number for the symmetric (non-unique) dimer.
+                symmetric_dimer_number = int(line[0])
 
-            # Seventh, obtain the dimer number of the unique dimer that is the same as this symmetric (non-unique) dimer.
-            unique_dimer_number = int(line[2])
+                # Seventh, obtain the dimer number of the unique dimer that is the same as this symmetric (non-unique) dimer.
+                unique_dimer_number = int(line[2])
 
-            # Eighth, make sure that dimer_no is not already in symmetric_to_unique_dimer
-            if symmetric_dimer_number in symmetric_to_unique_dimer:
-                raise Exception('huh?')
+                # Eighth, make sure that dimer_no is not already in symmetric_to_unique_dimer
+                if symmetric_dimer_number in symmetric_to_unique_dimer:
+                    raise Exception('huh?')
 
-            # Ninth, write the dimer data to symmetric_to_unique_dimer
-            symmetric_to_unique_dimer[symmetric_dimer_number] = unique_dimer_number
+                # Ninth, write the dimer data to symmetric_to_unique_dimer
+                symmetric_to_unique_dimer[symmetric_dimer_number] = unique_dimer_number
     
     # Tenth, return symmetric_to_unique_dimer
     return symmetric_to_unique_dimer

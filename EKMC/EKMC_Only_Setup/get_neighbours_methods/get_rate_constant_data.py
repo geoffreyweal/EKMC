@@ -5,10 +5,10 @@ This script is designed to obtain all the values that are used in obtaining rate
 """
 from copy import deepcopy
 
-from EKMC.EKMC_Setup.calculators.get_coulomb_energy import get_coulomb_energy
+from EKMC.EKMC_Only_Setup.calculators.get_coulomb_energy import get_coulomb_energy
 
-from EKMC.EKMC_Setup.get_neighbours_methods.get_rate_constant_methods.Marcus_parameters import get_Marcus_parameters
-from EKMC.EKMC_Setup.get_neighbours_methods.get_rate_constant_methods.MLJ_parameters    import get_MLJ_parameters
+from EKMC.EKMC_Only_Setup.get_neighbours_methods.get_rate_constant_methods.Marcus_parameters import get_Marcus_parameters
+from EKMC.EKMC_Only_Setup.get_neighbours_methods.get_rate_constant_methods.MLJ_parameters    import get_MLJ_parameters
 
 def get_rate_constant_data(kinetic_model, molecule1, molecule2, displacement_vector, electronic_coupling, original_kinetics_details):
 	"""
@@ -35,17 +35,21 @@ def get_rate_constant_data(kinetic_model, molecule1, molecule2, displacement_vec
 		The values required for the rate constant for different molecules that are not dependent on disorder.
 	"""
 
-	# First, copy of the kinetics_details and pop the relative_permittivity
+	# First, copy of the kinetics_details.
 	kinetics_details = deepcopy(original_kinetics_details)
+
+	# Second, pop the relative_permittivity. 
 	relative_permittivity = kinetics_details.pop('relative_permittivity')
+	if relative_permittivity is None:
+		relative_permittivity = 1.0
 	
-	# Second, get the value for V12 (coupling_energy).
+	# Third, get the value for V12 (coupling_energy).
 	if electronic_coupling is not None:
 		coupling_energy = electronic_coupling
 	else:
 		coupling_energy = get_coulomb_energy(molecule1, molecule2, displacement_vector, relative_permittivity)
 
-	# Third, get the rate constant data for the kinetic model you want to use
+	# Fourth, get the rate constant data for the kinetic model you want to use
 	if   kinetic_model.lower() == 'marcus':
 		rate_constant_data = get_Marcus_parameters(molecule1, molecule2, displacement_vector, coupling_energy, **kinetics_details)
 	elif kinetic_model.lower() == 'mlj':
@@ -53,7 +57,7 @@ def get_rate_constant_data(kinetic_model, molecule1, molecule2, displacement_vec
 	else:
 		raise Exception('Error: You must set "kinetic_model" to either "Marcus" or "MLJ". Your kinetic_model is set to: '+str(kinetic_model)+'. Check this out.')
 
-	# Fourth, return the rate constant data
+	# Fifth, return the rate constant data
 	return deepcopy(rate_constant_data)
 
 '''

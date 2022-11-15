@@ -74,7 +74,7 @@ def EKMC_Only_Setup(molecules_path, functional_and_basis_set, kinetic_model, sho
 		ATC_folder_path = long_range_couplings['path_to_ATC_folder']
 		add_charges_to_molecules(molecules, molecule_graphs, ATC_folder_path, functional_and_basis_set)
 	else:
-		raise Exception('Short Range Model?')
+		raise Exception('Long Range Model?')
 	long_range_coupling_data = {'model': long_range_couplings['model']}
 
 	# Sixth, Get the names of the neighbourhood dictionary keys to obtain.

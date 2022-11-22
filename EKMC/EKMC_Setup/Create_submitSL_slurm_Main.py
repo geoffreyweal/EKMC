@@ -43,7 +43,7 @@ def make_submitSL(local_path,project=None,time='0-01:00',nodes=1,ntasks_per_node
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
-def make_mass_submitSL_full(local_path,job_name,project=None,no_of_simulations=10,time='0-01:00',nodes=1,ntasks_per_node=1,mem=None,mem_per_cpu=None,partition='parallel',constraint=None,email='',python_version='python/3.8.1'):
+def make_mass_submitSL_full(local_path,general_temp_folder_path,job_name,project=None,no_of_simulations=10,time='0-01:00',nodes=1,ntasks_per_node=1,mem=None,mem_per_cpu=None,partition='parallel',constraint=None,email='',python_version='python/3.8.1'):
     """
 
     """
@@ -57,7 +57,7 @@ def make_mass_submitSL_full(local_path,job_name,project=None,no_of_simulations=1
     # Second, get all the mass_submit.sl files for the exciton kMC simulations for this crystal.
     for mass_submit_counter in count(1):
         # 2.1: Make mass_submit.sl
-        make_single_mass_submitSL_file_full(mass_submit_counter,low_job_number,high_job_number,local_path,job_name,project=project,time=time,nodes=nodes,ntasks_per_node=ntasks_per_node,mem=mem,mem_per_cpu=mem_per_cpu,partition=partition,constraint=constraint,email=email,python_version=python_version)
+        make_single_mass_submitSL_file_full(mass_submit_counter,general_temp_folder_path,low_job_number,high_job_number,local_path,job_name,project=project,time=time,nodes=nodes,ntasks_per_node=ntasks_per_node,mem=mem,mem_per_cpu=mem_per_cpu,partition=partition,constraint=constraint,email=email,python_version=python_version)
         
         # 2.2: Get the number of jobs that have now been recorded into slurm
         jobs_recorded_in_slurm = ((mass_submit_counter-1)*max_no_of_arrayjobs_in_a_mass_submit_file + high_job_number)
@@ -74,7 +74,7 @@ def make_mass_submitSL_full(local_path,job_name,project=None,no_of_simulations=1
         else:
             high_job_number = max_no_of_arrayjobs_in_a_mass_submit_file
 
-def make_single_mass_submitSL_file_full(mass_submit_counter,low_job_number,high_job_number,local_path,job_name,project=None,time='0-01:00',nodes=1,ntasks_per_node=1,mem=None,mem_per_cpu=None,partition='parallel',constraint=None,email='',python_version='python/3.8.1'):
+def make_single_mass_submitSL_file_full(mass_submit_counter,general_temp_folder_path,low_job_number,high_job_number,local_path,job_name,project=None,time='0-01:00',nodes=1,ntasks_per_node=1,mem=None,mem_per_cpu=None,partition='parallel',constraint=None,email='',python_version='python/3.8.1'):
     """
 
     """
@@ -112,25 +112,38 @@ def make_single_mass_submitSL_file_full(mass_submit_counter,low_job_number,high_
         submitSL.write('echo "My SLURM_ARRAY_JOB_ID: "${SLURM_ARRAY_JOB_ID}\n')
         submitSL.write('echo "My SLURM_ARRAY_TASK_ID: "${SLURM_ARRAY_TASK_ID}\n')
         submitSL.write('\n')
+        submitSL.write('# Get the simulation number for this simulation\n')
         submitSL.write('arrayjobset='+str(mass_submit_counter)+'\n')
         submitSL.write('sim_name=$(( $(( $(( ${arrayjobset} - 1 )) * '+str(max_no_of_arrayjobs_in_a_mass_submit_file)+' )) + ${SLURM_ARRAY_TASK_ID} ))\n')
         submitSL.write('\n')
+        submitSL.write('# Load python\n')
         submitSL.write('module load '+str(python_version)+'\n')
         submitSL.write('\n')
+        submitSL.write('# Make the folder to run the simulation from.\n')
         submitSL.write('if [ ! -d Sim${sim_name} ]; then\n')
         submitSL.write('    mkdir Sim${sim_name}\n')
         submitSL.write('fi\n')
+        submitSL.write('\n')
+        submitSL.write('# Copy KMC python script into Sim folder\n')
         submitSL.write('cp '+str(Run_EKMC_filename)+' Sim${sim_name}\n')
+        submitSL.write('\n')
+        submitSL.write('# Move into the Sim folder, run the KMC program, and move out of it.\n')
         submitSL.write('cd Sim${sim_name}\n')
-        submitSL.write('python3 '+str(Run_EKMC_filename)+'\n')
+        if general_temp_folder_path is not None:
+            submitSL.write('python3 -u '+str(Run_EKMC_filename)+' "'+str(general_temp_folder_path)+'/J${SLURM_ARRAY_JOB_ID}_T${SLURM_ARRAY_TASK_ID}"\n')
+        else:
+            submitSL.write('python3 -u '+str(Run_EKMC_filename)+'\n')
         submitSL.write('cd ..\n')
+        submitSL.write('\n')
+        submitSL.write('# Move output and error file to KMC folder.\n')
         submitSL.write('mv arrayJob_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.out Sim${sim_name}\n')
         submitSL.write('mv arrayJob_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.err Sim${sim_name}\n')
+        submitSL.write('\n')
         submitSL.close()
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
-def make_mass_submitSL_packets(local_path,job_name,project=None,no_of_simulations=10,no_of_packets_to_make=1,time='0-01:00',nodes=1,ntasks_per_node=1,mem=None,mem_per_cpu=None,partition='parallel',constraint=None,email='',python_version='python/3.8.1'):
+def make_mass_submitSL_packets(local_path,general_temp_folder_path,job_name,project=None,no_of_simulations=10,no_of_packets_to_make=1,time='0-01:00',nodes=1,ntasks_per_node=1,mem=None,mem_per_cpu=None,partition='parallel',constraint=None,email='',python_version='python/3.8.1'):
     """
 
     """
@@ -181,45 +194,59 @@ def make_mass_submitSL_packets(local_path,job_name,project=None,no_of_simulation
         submitSL.write('echo "My SLURM_ARRAY_JOB_ID: "${SLURM_ARRAY_JOB_ID}\n')
         submitSL.write('echo "My SLURM_ARRAY_TASK_ID: "${SLURM_ARRAY_TASK_ID}\n')
         submitSL.write('\n')
-        submitSL.write('module load '+str(python_version)+'\n')
-        submitSL.write('\n')
+        submitSL.write("# Perform each simulation in a for loop\n")
         submitSL.write('number_of_divides='+str(number_of_divides)+'\n')
         submitSL.write('for i in $( eval echo {1..${number_of_divides}} ); do\n')
         submitSL.write('\n')
+        submitSL.write('# Get the simulation number for this simulation\n')
         submitSL.write('Sim_no=$(( $(( $(( ${SLURM_ARRAY_TASK_ID} - 1)) * ${number_of_divides} )) + $i ))\n')
         submitSL.write('echo Currently performing caluclation on Sim: $Sim_no\n')
         submitSL.write('\n')
+        submitSL.write('# Load python\n')
+        submitSL.write('module load '+str(python_version)+'\n')
+        submitSL.write('\n')
+        submitSL.write('# Make the folder to run the simulation from.\n')
         submitSL.write('if [ ! -d Sim${Sim_no} ]; then\n')
         submitSL.write('    mkdir Sim${Sim_no}\n')
         submitSL.write('fi\n')
-        submitSL.write("echo '=============================================================================='\n")
+        submitSL.write('\n')
+        submitSL.write('# Copy KMC python script into Sim folder\n')
+        submitSL.write('cp '+str(Run_EKMC_filename)+' Sim${Sim_no}\n')
+        submitSL.write('\n')
+        submitSL.write('# Write starting message to output and error files.\n')
         submitSL.write("echo '=============================================================================='\n")
         submitSL.write("echo 'Running Sim'${Sim_no}\n")
         submitSL.write("echo '=============================================================================='\n")
-        submitSL.write("echo '=============================================================================='\n")
-        submitSL.write("1>&2 echo '=============================================================================='\n")
         submitSL.write("1>&2 echo '=============================================================================='\n")
         submitSL.write("1>&2 echo 'Running Sim'${Sim_no}\n")
         submitSL.write("1>&2 echo '=============================================================================='\n")
-        submitSL.write("1>&2 echo '=============================================================================='\n")
-        submitSL.write('cp '+str(Run_EKMC_filename)+' Sim${Sim_no}\n')
+        submitSL.write('\n')
+        submitSL.write('# Move into the Sim folder, run the KMC program, and move out of it.\n')
         submitSL.write('cd Sim${Sim_no}\n')
-        submitSL.write('python3 '+str(Run_EKMC_filename)+'\n')
+        if general_temp_folder_path is not None:
+            submitSL.write('python3 -u '+str(Run_EKMC_filename)+' "'+str(general_temp_folder_path)+'/J${SLURM_ARRAY_JOB_ID}_T${SLURM_ARRAY_TASK_ID}"\n')
+        else:
+            submitSL.write('python3 -u '+str(Run_EKMC_filename)+'\n')
+        submitSL.write('cd ..\n')
+        submitSL.write('\n')
+        submitSL.write('# Write ending message to output and error files.\n')
         submitSL.write("echo '=============================================================================='\n")
         submitSL.write("1>&2 echo '=============================================================================='\n")
-        submitSL.write('cd ..\n')
+        submitSL.write('\n')
+        submitSL.write('# Move output and error file to KMC folder.\n')
         submitSL.write('cp arrayJob_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.out Sim${Sim_no}/arrayJob_${SLURM_ARRAY_JOB_ID}_${Sim_no}.out\n')
         submitSL.write('cp arrayJob_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.err Sim${Sim_no}/arrayJob_${SLURM_ARRAY_JOB_ID}_${Sim_no}.err\n')
         submitSL.write('echo -n "" > arrayJob_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.out\n')
         submitSL.write('echo -n "" > arrayJob_${SLURM_ARRAY_JOB_ID}_${SLURM_ARRAY_TASK_ID}.err\n')
         submitSL.write('\n')
         submitSL.write('done\n')
+        submitSL.write('\n')
         submitSL.close()
 
 # ----------------------------------------------------------------------------------------------------------------------------------------
 
 def add_mem_to_submitSL(submitSL,mem=None,mem_per_cpu=None):
-    """s
+    """
 
     """
     if (mem is None) and not (mem_per_cpu is None):

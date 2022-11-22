@@ -25,9 +25,18 @@ def EKMC_Setup(EKMC_settings, mass_submission_information, no_of_cpus_for_setup=
 	"""
 
 	# First, get the file names and paths of data to obtain local neighbourhood data for
-	folder_name     = EKMC_settings['folder_name']
-	molecules_path  = EKMC_settings['molecules_path']
-	crystal_name    = os.path.basename(molecules_path)
+	folder_name      = EKMC_settings['folder_name']
+	molecules_path   = EKMC_settings['molecules_path']
+	crystal_name     = os.path.basename(molecules_path)
+	if 'general_temp_folder_path' in EKMC_settings:
+		if isinstance(EKMC_settings['general_temp_folder_path'],str):
+			general_temp_folder_path = EKMC_settings['general_temp_folder_path']
+			if general_temp_folder_path.endswith('/'):
+				general_temp_folder_path = general_temp_folder_path[:-1]
+		else:
+			raise Exception('Error: Make sure your input for "general_temp_folder_path" in your EKMC_settings dictionary is a string or None')
+	else:
+		general_temp_folder_path = None
 
 	# Second, obtain the functional and basis set settings used for this simulation
 	functional_and_basis_set = EKMC_settings['functional_and_basis_set']
@@ -72,7 +81,7 @@ def EKMC_Setup(EKMC_settings, mass_submission_information, no_of_cpus_for_setup=
 	# Tenth, create the mass_submit.sl for submitting a number of repeated simulation to slurm
 	print('-----------------------------------------------------')
 	print('MAKING '+str(mass_submit_filename)+' FILE')
-	make_mass_submit_file(path_to_simulation=path_to_simulation, crystal_name=crystal_name, functional_and_basis_set=functional_and_basis_set, mass_submission_information=mass_submission_information)
+	make_mass_submit_file(path_to_simulation=path_to_simulation, general_temp_folder_path=general_temp_folder_path, crystal_name=crystal_name, functional_and_basis_set=functional_and_basis_set, mass_submission_information=mass_submission_information)
 	print('-----------------------------------------------------')
 
 	print('#########################################################################')
@@ -103,11 +112,13 @@ def make_Run_EKMC_file(path_to_simulation, path_to_KMC_setup_data, sim_time_limi
 		EKMC_PY.write('This script will allow you to perform a Exciton-based kinetic Monte-Carlo simulation on your crystal.\n')
 		EKMC_PY.write('"""\n')
 		EKMC_PY.write('\n')
+		EKMC_PY.write('import sys\n')
 		EKMC_PY.write('from EKMC import Run_EKMC'+'\n')
 		EKMC_PY.write('\n')
 		EKMC_PY.write('# First, give the path to the KMC_setup_data, which has been run previously.\n')
 		EKMC_PY.write('# This file contains all the kinetic information and the electronic information around the local neighbourhood of each molecule in the crystal.\n')
-		EKMC_PY.write(f'path_to_KMC_setup_data="{path_to_KMC_setup_data}"\n')
+		EKMC_PY.write(f'path_to_KMC_setup_data = "{path_to_KMC_setup_data}"\n')
+		EKMC_PY.write('temp_folder_path = (None if (len(sys.argv) == 1) else str(sys.argv[1]))\n')
 		EKMC_PY.write('\n')
 		EKMC_PY.write('# Second, give the amount of time or the number of steps you would like to simulate.\n')
 		EKMC_PY.write(f'sim_time_limit = {sim_time_limit}'+'\n')
@@ -120,9 +131,9 @@ def make_Run_EKMC_file(path_to_simulation, path_to_KMC_setup_data, sim_time_limi
 		EKMC_PY.write(f'no_of_molecules_at_cell_points_to_store_on_RAM = {no_of_molecules_at_cell_points_to_store_on_RAM}'+'\n')
 		EKMC_PY.write('\n')
 		EKMC_PY.write('# Fourth, perform the exciton kinetic Monte Carlo simulation.\n')
-		EKMC_PY.write('Run_EKMC(path_to_KMC_setup_data=path_to_KMC_setup_data, sim_time_limit=sim_time_limit, max_no_of_steps=max_no_of_steps, store_data_in_databases=store_data_in_databases, no_of_molecules_at_cell_points_to_store_on_RAM=no_of_molecules_at_cell_points_to_store_on_RAM)'+'\n')
+		EKMC_PY.write('Run_EKMC(path_to_KMC_setup_data=path_to_KMC_setup_data, temp_folder_path=temp_folder_path, sim_time_limit=sim_time_limit, max_no_of_steps=max_no_of_steps, store_data_in_databases=store_data_in_databases, no_of_molecules_at_cell_points_to_store_on_RAM=no_of_molecules_at_cell_points_to_store_on_RAM)'+'\n')
 
-def make_mass_submit_file(path_to_simulation, crystal_name, functional_and_basis_set, mass_submission_information):
+def make_mass_submit_file(path_to_simulation, general_temp_folder_path, crystal_name, functional_and_basis_set, mass_submission_information):
 	"""
 	This method is designed to create the Run_EKMC.py for performing the KMC simulation/
 
@@ -130,6 +141,8 @@ def make_mass_submit_file(path_to_simulation, crystal_name, functional_and_basis
 	----------
 	path_to_simulation : str.
 		This is the path to save this Run_EKMC.py file to.
+	general_temp_folder_path : str. or None
+		This is the path to place files as the KMC file is running for temporary storage. This is not vital for running a simulation. If set to None, no temporary folder will be created. Dafault: None 
 	crystal_name : str.
 		This is the name of the crystal file.
 	functional_and_basis_set : str.
@@ -154,10 +167,10 @@ def make_mass_submit_file(path_to_simulation, crystal_name, functional_and_basis
 	submission_type = mass_submission_information['submission_type']
 	no_of_simulations = mass_submission_information['no_of_simulations']
 	if submission_type == 'full':
-		make_mass_submitSL_full(path_to_simulation,job_name,project,no_of_simulations,time,nodes,ntasks_per_node,mem,None,partition,constraint,email,python_version)
+		make_mass_submitSL_full(path_to_simulation,general_temp_folder_path,job_name,project,no_of_simulations,time,nodes,ntasks_per_node,mem,None,partition,constraint,email,python_version)
 	elif submission_type == 'packet':
 		no_of_packets_to_make = mass_submission_information['no_of_packets_to_make']
-		make_mass_submitSL_packets(path_to_simulation,job_name,project,no_of_simulations,no_of_packets_to_make,time,nodes,ntasks_per_node,mem,None,partition,constraint,email,python_version)
+		make_mass_submitSL_packets(path_to_simulation,general_temp_folder_path,job_name,project,no_of_simulations,no_of_packets_to_make,time,nodes,ntasks_per_node,mem,None,partition,constraint,email,python_version)
 	else:
 		print('Error in def make_mass_submit_file, in EKMC_Multi_Setup.py')
 		print('Your input for the "submission_type" tag in the mass_submission_information dictionary must be either:')

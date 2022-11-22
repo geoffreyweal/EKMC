@@ -7,7 +7,7 @@ This method is designed to extract all the data needed for running the kinetic M
 from EKMC.EKMC.kMC_algorithm import run_kMC_algorithm
 
 KMC_setup_data_filename = 'KMC_setup_data.ekmc'
-def Run_EKMC(path_to_KMC_setup_data, sim_time_limit=float('inf'), max_no_of_steps='inf', store_data_in_databases=False, no_of_molecules_at_cell_points_to_store_on_RAM=None):
+def Run_EKMC(path_to_KMC_setup_data, temp_folder_path=None, sim_time_limit=float('inf'), max_no_of_steps='inf', store_data_in_databases=False, no_of_molecules_at_cell_points_to_store_on_RAM=None):
 	"""
 	This program is designed to simulate the movement of an exciton through a OPV crystal system.
 
@@ -15,6 +15,8 @@ def Run_EKMC(path_to_KMC_setup_data, sim_time_limit=float('inf'), max_no_of_step
 	----------
 	path_to_KMC_setup_data : str.
 		This is te path to the ekmc file that contains information about your kinetic Monte Carlo simulation.
+	temp_folder_path : str. or None
+		This is the path to place files as the KMC file is running for temporary storage. This is not vital for running a simulation. If set to None, no temporary folder will be created. Dafault: None 
 	sim_time_limit : float
 		This is the maximum simulated time limit to run the kinetic Monte Carlo simulation over.
 	max_no_of_steps : int
@@ -47,4 +49,4 @@ def Run_EKMC(path_to_KMC_setup_data, sim_time_limit=float('inf'), max_no_of_step
 	print('-------- RUNNING EXCITON KMC SIMULATION --------')
 	print('------------------------------------------------')
 	print('------------------------------------------------')
-	run_kMC_algorithm(kinetic_model, all_local_neighbourhoods, coupling_disorder, energetic_disorder, sim_time_limit=sim_time_limit, max_no_of_steps=max_no_of_steps, no_of_molecules_at_cell_points_to_store_on_RAM=no_of_molecules_at_cell_points_to_store_on_RAM, store_data_in_databases=store_data_in_databases)
+	run_kMC_algorithm(kinetic_model, all_local_neighbourhoods, coupling_disorder, energetic_disorder, sim_time_limit=sim_time_limit, max_no_of_steps=max_no_of_steps, no_of_molecules_at_cell_points_to_store_on_RAM=no_of_molecules_at_cell_points_to_store_on_RAM, store_data_in_databases=store_data_in_databases, temp_folder_path=temp_folder_path)

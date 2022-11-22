@@ -43,6 +43,8 @@ An example of the ``setup_EKMC_sims.py`` script is shown below. General recommen
 
 	temperature = 300
 
+	general_temp_folder_path = '/tmp/wealge/'
+
 	# -----------------------------------------------------------------------------------------------
 	# Second: Give settings for each crystal and electronic settings.
 
@@ -86,7 +88,7 @@ An example of the ``setup_EKMC_sims.py`` script is shown below. General recommen
 			store_data_in_databases = False
 			no_of_molecules_at_cell_points_to_store_on_RAM = None
 
-			crystal_settings = {'folder_name': crystal_name+'/'+str(coupling_disorder), 'molecules_path': molecules_path, 'ATC_folder_path': ATC_folder_path, 'functional_and_basis_set': functional_and_basis_set, 'kinetic_model': kinetic_model, 'dimer_couplings': dimer_couplings, 'kinetics_details': kinetics_details, 'neighbourhood_rCut': neighbourhood_rCut, 'sim_time_limit': sim_time_limit, 'max_no_of_steps': max_no_of_steps, 'store_data_in_databases': store_data_in_databases, 'no_of_molecules_at_cell_points_to_store_on_RAM': no_of_molecules_at_cell_points_to_store_on_RAM}
+			crystal_settings = {'folder_name': crystal_name+'/'+str(coupling_disorder), 'general_temp_folder_path': general_temp_folder_path'molecules_path': molecules_path, 'ATC_folder_path': ATC_folder_path, 'functional_and_basis_set': functional_and_basis_set, 'kinetic_model': kinetic_model, 'dimer_couplings': dimer_couplings, 'kinetics_details': kinetics_details, 'neighbourhood_rCut': neighbourhood_rCut, 'sim_time_limit': sim_time_limit, 'max_no_of_steps': max_no_of_steps, 'store_data_in_databases': store_data_in_databases, 'no_of_molecules_at_cell_points_to_store_on_RAM': no_of_molecules_at_cell_points_to_store_on_RAM}
 
 			all_EKMC_settings.append(crystal_settings)
 
@@ -121,6 +123,7 @@ The first set of parameters involves providing general settings for your EKMC si
 	* ``functional_and_basis_set`` (*str.*): This is the functional and basis set that you perform DFT calculations with to obtain atomic transition charges (ATC), electronic energy transfer (EET) values, reorganisation energies, and other parameters. 
 	* ``kinetic_model`` (*str.*): This is the kinetic model you would like to use. There are two options available; ``'Marcus'``: Use Marcus theory, ``'MLJ'``: Use Marcus-Levich-Jortner theory. See https://doi.org/10.1063/1.4920945 for more information. 
 	* ``temperature`` (*float.*): This is the temperature of the system of interest. 
+	* ``general_temp_folder_path`` (*str.*/None): This is the path to place files as the KMC file is running for temporary storage. This is not vital for running a simulation. If set to None, no temporary folder will be created. Dafault: ``None`` 
 
 There are another two parameters that have been given in this example, called ``frequency_wavenumber`` and ``Wang_number``. The ``frequency_wavenumber`` is the XXX, while the Wang's number is the XXX. These are used in this example to obtain the classical component of the reorganisation energy. See later in this documentation page. 
 

@@ -1,11 +1,11 @@
 """
-EKMC_Multi_Setup.py, Geoffrey Weal, 12/8/
+EKMC_Setup.py, Geoffrey Weal, 12/8/
 
 This program is designed to setup the exciton kMC algorithm for performing multiple repeats of the same simulation in slurm
 """
 import os, math
 from EKMC.EKMC.Run_EKMC_setup_files.get_EKMC_version import get_EKMC_version
-from EKMC.EKMC_Setup.EKMC_Only_Setup.EKMC_Only_Setup import EKMC_Only_Setup
+from SUMELF.SUMELF.EKMC_based_methods.EKMC_Only_Setup.EKMC_Only_Setup import EKMC_Only_Setup
 from EKMC.EKMC_Setup.Create_submitSL_slurm_Main      import make_mass_submitSL_full, make_mass_submitSL_packets
 
 exciton_filename = 'Run_EKMC.py'
@@ -216,7 +216,7 @@ def make_mass_submit_file(path_to_EKMC_simulations, temp_folder_path, crystal_na
 		no_of_sims_per_packet = mass_submission_information['no_of_sims_per_packet']
 		make_mass_submitSL_packets(path_to_EKMC_simulations,temp_folder_path,job_name,project,no_of_simulations,no_of_sims_per_packet,time,cpus_per_task,mem,None,partition,constraint,email,python_version,gcc_version,gcccore_version,binutils_version)
 	else:
-		print('Error in def make_mass_submit_file, in EKMC_Multi_Setup.py')
+		print('Error in def make_mass_submit_file, in EKMC_Setup.py')
 		print('Your input for the "submission_type" tag in the mass_submission_information dictionary must be either:')
 		print('  * full: Perform "no_of_simulations" number of individual simulations in "no_of_simulations" submitted jobs.')
 		print('  * packet: Perform "no_of_simulations" number of individual simulations in "no_of_sims_per_packet" submitted jobs.')

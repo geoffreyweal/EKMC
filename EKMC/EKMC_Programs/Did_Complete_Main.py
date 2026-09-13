@@ -20,7 +20,6 @@ def get_variables_from_run(filepath):
     if sim_time_limit is None:
         print('Error')
         print(sim_time_limit)
-        import pdb; pdb.set_trace()
         exit('Error')
     return sim_time_limit
 
@@ -64,7 +63,6 @@ def Did_Simulation_finish_successfully(filepath):
     except Exception as exception:
         to_string = 'error with '+str(filepath)+'. Error Message\n'+str(exception)
         print(to_string)
-        import pdb; pdb.set_trace()
         raise Exception(to_string)
 
     # Sixth, convert time variable from string to float

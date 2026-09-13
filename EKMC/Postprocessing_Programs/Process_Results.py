@@ -162,7 +162,7 @@ def Run_method(path_to_crystal_file=None, no_of_cpus=1):
     save_to_excel_spreadsheet(data_foldername, data_for_excel)
 
     # Report that everything finished successfully
-    #print('EKMC process_results finished successfully.')
+    #print('ekmc process_results finished successfully.')
 
 # ============================================================================================================================================================================================================
 

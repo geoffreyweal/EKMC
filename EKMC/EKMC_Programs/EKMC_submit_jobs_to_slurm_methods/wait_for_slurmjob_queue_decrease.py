@@ -184,7 +184,7 @@ def check_pending_queue(live_pending_queue, pending_slurm_jobs_queue, running_sl
         if job_details not in live_pending_queue:
             running_slurm_jobs_queue.append(pending_slurm_jobs_queue.pop(index))
 
-    # Second, determine if the maximum number of pending EKMC submit jobs has been reached
+    # Second, determine if the maximum number of pending ekmc submit jobs has been reached
     if (Max_jobs_pending_in_queue_from_EKMC_mass_submit == 'Not Set') or (Max_jobs_pending_in_queue_from_EKMC_mass_submit is None):
         have_reached_maximum_no_of_pending_EKMC_submit_jobs = False
     else:
@@ -217,7 +217,7 @@ def check_running_queue(live_running_queue, running_slurm_jobs_queue, Max_jobs_r
         if job_details not in live_running_queue:
             del running_slurm_jobs_queue[index]
 
-    # Second, determine if the maximum number of pending EKMC submit jobs has been reached
+    # Second, determine if the maximum number of pending ekmc submit jobs has been reached
     if Max_jobs_running_in_queue_from_EKMC_mass_submit == 'Not Set' or (Max_jobs_running_in_queue_from_EKMC_mass_submit is None):
         have_reached_maximum_no_of_running_EKMC_submit_jobs = False
     else:

@@ -8,7 +8,7 @@ import os
 # =========================================================================================================================================
 # These are the default settings for this program.
 
-# Maximum numbers of jobs in the ``EKMC submit`` queue:
+# Maximum numbers of jobs in the ``ekmc submit`` queue:
 Max_jobs_in_queue_at_any_one_time_DEFAULT = 2000
 Max_jobs_running_in_queue_from_EKMC_mass_submit_DEFAULT = None
 Max_jobs_pending_in_queue_from_EKMC_mass_submit_DEFAULT = 100
@@ -17,7 +17,7 @@ Max_jobs_pending_in_queue_from_EKMC_mass_submit_DEFAULT = 100
 wait_between_submissions_DEFAULT = False
 time_to_wait_before_next_submission_DEFAULT = 10.0
 
-# Wait time to submit jobs if you have reached the maximum ``EKMC submit`` queue:
+# Wait time to submit jobs if you have reached the maximum ``ekmc submit`` queue:
 time_to_wait_max_queue_DEFAULT = 60.0
 
 # Settings that control what happens if there is an error when submitting jobs to slurm: 
@@ -104,13 +104,11 @@ def read_submit_settingsTXT_file(path_to_settings_txt_file):
             variables_you_do_not_have_in_settingsTXT.append(variable)
     if not len(variables_you_do_not_have_in_settingsTXT) == 0:
         print(variables_you_do_not_have_in_settingsTXT)
-        import pdb; pdb.set_trace()
         exit('Error')
 
     # Third, check that no variables have been entered twice:
     if not (len(variables_found) == len(set(variables_found))):
         print(variables_you_do_not_have_in_settingsTXT)
-        import pdb; pdb.set_trace()
         exit('Error')
 
     # Fourth, return all the settings from the settings file.

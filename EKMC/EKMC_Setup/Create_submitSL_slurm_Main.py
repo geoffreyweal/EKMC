@@ -226,10 +226,8 @@ def make_mass_submitSL_packets(local_path,temp_folder_path,job_name,project=None
         submitSL.write('# Load C++\n')
         '''
         if   (gcccore_version is None) and (gcc_version is None):
-            import pdb; pdb.set_trace()
             raise Exception('Error: You need to specify either your gcc_version or gcccore_version in your submission dictionary in the setup EKMC script.')
         elif (gcccore_version is not None) and (gcc_version is not None):
-            import pdb; pdb.set_trace()
             raise Exception('Error: You need to specify either your gcc_version or gcccore_version in your submission dictionary in the setup EKMC script.')
         elif gcccore_version is not None:
             submitSL.write('module load '+str(gcccore_version)+'\n')

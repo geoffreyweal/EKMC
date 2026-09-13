@@ -34,7 +34,6 @@ def process_data(all_sims, molnames_and_coms, unit_cell_matrix, begin_recording_
     spatial_stepwise_D_tensor, eigenvalues_of_spatial_stepwise_diffusion_tensor, eigenvectors_of_spatial_stepwise_diffusion_tensor, diffusion_coefficient_from_spatial_stepwise_diffusion_tensor, prob_stepwise_D_tensor, eigenvalues_of_prob_stepwise_diffusion_tensor, eigenvectors_of_prob_stepwise_diffusion_tensor, diffusion_coefficient_from_prob_stepwise_diffusion_tensor = get_stepwise_diffusion_properties(all_stepwise_diffusion_data, molnames_and_coms)
 
 
-    import pdb; pdb.set_trace()
 
 
 

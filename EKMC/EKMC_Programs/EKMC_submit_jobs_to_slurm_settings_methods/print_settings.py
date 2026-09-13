@@ -1,21 +1,21 @@
 """
 print_settings.py, Geoffrey Weal, 3/1/2023
 
-These method will print the current settings for EKMC submit
+These method will print the current settings for ekmc submit
 """
 import os
 
 def print_settings(settings):
     """
-    This method will print the current ``EKMC submit`` settings.
+    This method will print the current ``ekmc submit`` settings.
 
     Parameters
     ----------
     settings : tuple
-        This contains all the settings for ``EKMC submit``.
+        This contains all the settings for ``ekmc submit``.
     """
     Max_jobs_in_queue_at_any_one_time, Max_jobs_in_queue_at_any_one_time_running, Max_jobs_in_queue_at_any_one_time_pending, wait_between_submissions, time_to_wait_before_next_submission, time_to_wait_max_queue, number_of_consecutive_error_before_exitting, time_to_wait_due_to_submission_error = settings
-    print('Current EKMC submit settings:')
+    print('Current ekmc submit settings:')
     print()
     print("Setting Keyword: Value")
     print()

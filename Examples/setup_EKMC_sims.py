@@ -5,7 +5,7 @@ This script is designed to setup your excitonic kinetic Monte Carlo files for ru
 """
 from math import pi
 from copy import deepcopy
-from EKMC import EKMC_Multi_Setup
+from EKMC import EKMC_Setup
 
 h_bar = 6.582119569 * (10.0 ** -16.0) # eV s
 plancks_constant = h_bar * 2.0 * pi # eVs
@@ -56,7 +56,7 @@ for crystal_name in crystal_names:
 		kinetics_details['coupling_disorder'] = coupling_disorder
 		kinetics_details['relative_permittivity'] = relative_permittivities[crystal_name]
 		huang_rhys_factor = huang_rhys_factors[crystal_name]
-		reorganisation_energy = reorganisation_energys[crystal_name]
+		reorganisation_energy = reorganisation_energies[crystal_name]
 		kinetics_details['classical_reorganisation_energy'] = reorganisation_energy - huang_rhys_factor*Wang_number
 		kinetics_details['temperature'] = temperature
 
@@ -91,7 +91,12 @@ all_mass_submission_information = [deepcopy(mass_submission_information)]*len(al
 # -----------------------------------------------------------------------------------------------
 # Fifth, setup all your excitonic kinetic Monte Carlo simulations!
 
-EKMC_Multi_Setup(all_EKMC_settings=all_EKMC_settings, all_mass_submission_information=all_mass_submission_information)
+# NOTE: EKMC_Setup uses multiprocessing when no_of_cpus_for_setup > 1. On macOS (and
+#       Windows) Python starts workers with the "spawn" method, which re-imports this
+#       script inside every worker, so the setup call must sit behind this guard.
+if __name__ == '__main__':
+	for EKMC_settings, mass_submission_information in zip(all_EKMC_settings, all_mass_submission_information):
+		EKMC_Setup(EKMC_settings, mass_submission_information)
 
 # -----------------------------------------------------------------------------------------------
 

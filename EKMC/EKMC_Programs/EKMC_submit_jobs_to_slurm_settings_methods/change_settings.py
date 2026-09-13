@@ -14,7 +14,6 @@ def change_settings(args, current_settings):
     """
 
     raise Exception('Need to write this')
-    import pdb; pdb.set_trace()
 
     if len(args) > 2:
         print('Error in changing submit settings:')

@@ -1,7 +1,7 @@
 # The information about the EKMC program
 
 __name__    = 'EKMC'
-__version__ = '0.26.10'
+__version__ = '0.27.0'
 __author__  = 'Dr. Geoffrey Weal, Dr. Josh Sutton, Dr. Chayanit Wechwithayakhlung, Dr. Daniel Packwood, Dr. Paul Hume, Prof. Justin Hodgkiss'
 
 import sys, importlib

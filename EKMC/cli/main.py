@@ -18,7 +18,7 @@ commands = [
     ('process_steps',   'EKMC.Postprocessing_Programs.Process_Results_of_Steps'),
 ]
 
-def main(prog='EKMC', description='EKMC command line tool.',version=__version__, commands=commands, hook=None, args=None):
+def main(prog='ekmc', description='EKMC command line tool.',version=__version__, commands=commands, hook=None, args=None):
     parser = argparse.ArgumentParser(prog=prog,description=description,formatter_class=Formatter)
     parser.add_argument('--version', action='version',version='%(prog)s-{}'.format(version))
     parser.add_argument('-T', '--traceback', action='store_true')

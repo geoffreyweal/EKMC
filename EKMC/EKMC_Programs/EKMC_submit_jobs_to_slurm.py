@@ -26,13 +26,13 @@ submit_settings_name = 'EKMC_submit_jobs_to_slurm_settings_methods/submit_settin
 path_to_settings_txt_file = this_scripts_path+'/'+submit_settings_name
 
 class CLICommand:
-    """Submit EKMC jobs to slurm. See ``EKMC submit --help`` for more information.
+    """Submit EKMC jobs to slurm. See ``ekmc submit --help`` for more information.
     """
 
     @staticmethod
     def add_arguments(parser):
         parser.add_argument('-P', '--print-settings', action='store_true', help='Print your settings without submitting EKMC jobs.')
-        parser.add_argument('new_settings', nargs='*', help='This contains the settings that you would like to change. Use ``EKMC submit -P`` to determine all the settings you can change, and see what they currently are.')
+        parser.add_argument('new_settings', nargs='*', help='This contains the settings that you would like to change. Use ``ekmc submit -P`` to determine all the settings you can change, and see what they currently are.')
 
     @staticmethod
     def run(args_submit):
@@ -40,22 +40,22 @@ class CLICommand:
         # First, use this method to create a settings.txt file if it doesn't already exist, and check that the current settings.txt file can be read without problems.
         current_settings = check_submit_settingsTXT(path_to_settings_txt_file)
 
-        # Second, obtain the list of settings to be changed in EKMC submit
+        # Second, obtain the list of settings to be changed in ekmc submit
         new_settings = args_submit.new_settings
 
         if args_submit.print_settings:
 
-            # 3.1: Print the current settings for EKMC submit
+            # 3.1: Print the current settings for ekmc submit
             print_settings(current_settings)
 
         elif len(new_settings) > 0:
 
-            # 2.2: Change the settings for the ``EKMC submit`` program.s
+            # 2.2: Change the settings for the ``ekmc submit`` program.s
             change_settings(new_settings, current_settings)
 
         else:
 
-            # 2.3: Run EKMC submit program
+            # 2.3: Run ekmc submit program
             Run_method()
 
 # ================================================================================================
@@ -212,7 +212,7 @@ def Run_method():
                                 print("Submitted " + str(name) + " to slurm: "+str(job_number))
                                 # Add the current job_number (including all arrayjobs) from the just submitted EKMC job to the pending_slurm_jobs_queue queue
                                 add_job_number_to_queue(pending_slurm_jobs_queue, job_number)
-                                # Wait until this ``EKMC submit`` program's running and pending queues are ready 
+                                # Wait until this ``ekmc submit`` program's running and pending queues are ready 
                                 update_to_submission_settings_inputs = (path_to_settings_txt_file, Max_total_jobs_in_queue_at_any_one_time, Max_jobs_running_in_queue_from_EKMC_mass_submit, Max_jobs_pending_in_queue_from_EKMC_mass_submit, wait_between_submissions, time_to_wait_before_next_submission, time_to_wait_max_queue, number_of_consecutive_error_before_exitting, time_to_wait_due_to_submission_error)
                                 wait_for_slurmjob_queue_decrease(pending_slurm_jobs_queue, running_slurm_jobs_queue, Max_jobs_pending_in_queue_from_EKMC_mass_submit, Max_jobs_running_in_queue_from_EKMC_mass_submit, update_to_submission_settings_inputs)
                                 break
@@ -309,7 +309,7 @@ def add_job_number_to_queue(slurm_jobs_queue, job_number):
     Parameters
     ----------
     slurm_jobs_queue : list of (int,int/None)
-        This is the queue of EKMC submit jobs (either running or pending).
+        This is the queue of ekmc submit jobs (either running or pending).
     job_number : int
         This is the slurmjob number (not including arrayjob information).
 

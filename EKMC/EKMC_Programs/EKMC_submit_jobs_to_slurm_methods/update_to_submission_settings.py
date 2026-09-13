@@ -7,7 +7,7 @@ from EKMC.EKMC_Programs.EKMC_submit_jobs_to_slurm_settings_methods.settings_meth
 
 def update_to_submission_settings(path_to_settings_txt_file, Max_total_jobs_in_queue_at_any_one_time, Max_jobs_running_in_queue_from_EKMC_mass_submit, Max_jobs_pending_in_queue_from_EKMC_mass_submit, wait_between_submissions, time_to_wait_before_next_submission, time_to_wait_max_queue, number_of_consecutive_error_before_exitting, time_to_wait_due_to_submission_error):
     """
-    This method will update the ``EKMC submit`` program settings if they were changed while this program was running. 
+    This method will update the ``ekmc submit`` program settings if they were changed while this program was running. 
     """
 
     # First, make a check on the subission settings

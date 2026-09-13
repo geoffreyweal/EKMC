@@ -73,7 +73,6 @@ def get_number_to_trials_that_will_be_submitted_by_ekmc_mass_submitSL(dirpath):
     print('Error in def get_number_to_trials_that_will_be_submitted_by_ekmc_mass_submitSL, in Run_ekmc_mass_submitSl_slurm.py script, found in the folder SubsidiaryPrograms in this GA program.')
     print('The ekmc_mass_submit.sl script found in '+str(dirpath)+' does not have the line that starts with "#SBATCH --array=" in the script.')
     print('Just check this script to make sure everything is all good.')
-    import pdb; pdb.set_trace()
     print('This program will finish')
     exit()
 

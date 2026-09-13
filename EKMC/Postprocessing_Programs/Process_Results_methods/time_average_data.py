@@ -36,7 +36,6 @@ def time_average_data(times, average_energies_over_time, diffusion_over_time, di
             ending_index = index
             break
     else:
-        import pdb; pdb.set_trace()
         raise Exception('Error.')
 
     if ending_index == len(average_energies_over_time):

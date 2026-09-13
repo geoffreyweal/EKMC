@@ -2,7 +2,7 @@
 
 __name__    = 'EKMC'
 __version__ = '0.27.0'
-__author__  = 'Dr. Geoffrey Weal, Dr. Josh Sutton, Dr. Chayanit Wechwithayakhlung, Dr. Daniel Packwood, Dr. Paul Hume, Prof. Justin Hodgkiss'
+__author__  = 'Dr. Geoffrey Weal, Dr. Josh Sutton, Dr. Chayanit Wechwithayakhlung, Assoc. Prof. Daniel Packwood, Dr. Paul Hume, Prof. Justin Hodgkiss'
 
 import sys, importlib
 import importlib.util
